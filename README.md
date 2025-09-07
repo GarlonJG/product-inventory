@@ -1,6 +1,7 @@
 # Product Inventory Management System
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
+<WIP as of 9/7/2025>
 
 ## Features
 
@@ -21,8 +22,10 @@ A full-stack web application for managing product inventory with a modern React 
 
 ### Backend
 - Node.js
-- (Additional backend details will be added based on your server implementation)
-
+- Prisma
+- Sqlite
+- NestJS
+  
 ## Getting Started
 
 ### Prerequisites
@@ -61,7 +64,7 @@ A full-stack web application for managing product inventory with a modern React 
 
 Start both frontend and backend servers with a single command:
 ```bash
-npm start
+npm run start
 ```
 
 This will start:
