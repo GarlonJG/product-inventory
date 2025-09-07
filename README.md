@@ -1,6 +1,7 @@
 # Product Inventory Management System
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
+
 <WIP as of 9/7/2025>
 
 ## Features
