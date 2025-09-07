@@ -23,7 +23,7 @@ A full-stack web application for managing product inventory with a modern React 
 ### Backend
 - Node.js
 - Prisma
-- Sqlite
+- SQLite
 - NestJS
   
 ## Getting Started
