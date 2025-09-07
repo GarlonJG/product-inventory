@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "concurrently \"npm run dev --prefix client\" \"npm run start --prefix inventory_server\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
