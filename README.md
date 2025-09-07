@@ -8,7 +8,6 @@ A full-stack web application for managing product inventory with a modern React 
 - **Product Management**: Add, view, edit, and delete products
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
 - **Data Grid**: Interactive data table with sorting, filtering, and pagination
-- **Form Validation**: Robust form handling with React Hook Form
 - **Real-time Updates**: View changes immediately as they happen
 
 ## Tech Stack
