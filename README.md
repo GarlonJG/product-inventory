@@ -3,6 +3,11 @@
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
 <WIP as of 9/7/2025>
+##Still to Come
+- **Additional Backend and FrontEnd validations
+- **Grid styling
+- **Additional options/settings for the inventory grid
+
 
 ## Features
 
