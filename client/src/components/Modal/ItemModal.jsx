@@ -22,11 +22,11 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, updateItem }) => {
     <Modal
       open={open}
       onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description">
+      aria-labelledby="item-modal-title"
+      aria-describedby="item-modal-description">
       <Box sx={modal_box}>
         <Typography variant="h6" component="h2">
-          {form.id ? 'Update Item' : 'Add Item'}
+          {form.id ? 'Edit Item' : 'Add Item'}
         </Typography>
         <Form form={form} handleSubmit={handleSubmit} updateItem={updateItem} handleClose={handleClose}/>
       </Box>

@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
-import { Button, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import EditToolBar from './EditToolBar';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -54,18 +56,18 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
 
     return (
         <>
-            {/* <Box sx={boxStyle}> */}
+            <Box sx={boxStyle}>
                 <Typography variant="h4" component="h1">
                     Inventory
                 </Typography>
-            {/* </Box> */}
+            </Box>
         
             <div sx={dataGridStyle}>
             <DataGrid
                 rows={items}
                 columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10, 25, 50]}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 25, 50]}
                 disableSelectionOnClick
                 slots={{ toolbar: EditToolBar }}
                 slotProps={{

@@ -9,7 +9,9 @@ const initialFormState = {
   id: '', 
   name: '', 
   stock: 0, 
-  sku: '' 
+  sku: '',
+  price: 0.00,
+  description: '',
 };
 
 function App() {

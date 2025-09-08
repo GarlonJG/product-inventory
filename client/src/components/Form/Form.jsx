@@ -69,7 +69,6 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
       <FormInput
         name="description"
         control={control}
-        //rules={{ required: 'Description is required' }}
         error={errors.description}
         multiline
         rows={3}
@@ -80,7 +79,7 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
           name="price"
           control={control}
           rules={{
-            //required: 'Price is required',
+            required: 'Price is required',
             min: {
               value: 0,
               message: 'Price must be a positive number'
@@ -98,7 +97,7 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
           name="stock"
           control={control}
           rules={{
-            //required: 'Stock is required',
+            required: 'Stock is required',
             min: {
               value: 0,
               message: 'Stock cannot be negative'
@@ -125,7 +124,7 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
           type="submit" 
           variant="contained"
         >
-          {form.id ? 'Update' : 'Add'}
+          {form.id ? 'Edit' : 'Add'}
         </Button>
       </Box>
     </Box>
