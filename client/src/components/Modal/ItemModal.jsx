@@ -19,7 +19,11 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, updateItem }) => {
   console.log("ItemModal rendered");
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description">
       <Box sx={modal_box}>
         <Typography variant="h6" component="h2">
           {form.id ? 'Update Item' : 'Add Item'}

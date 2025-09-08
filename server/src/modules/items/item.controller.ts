@@ -3,21 +3,18 @@ import { Controller, Get, Post, Patch, Delete, Param, Body, Query, NotFoundExcep
 import { ItemService } from './item.service';
 import { z } from 'zod';
 
-const IdParam = z.coerce.number().int().positive();
-const CreateSchema = z.object({
-    name: z.string().min(1),
-    stock: z.number().min(0),
-    sku: z.string().min(1).regex(/^[a-zA-Z0-9]+$/, {
-        message: "SKU must contain only letters and numbers"
-    })
+export const ItemSchema = z.object({
+    name: z.string().max(100).min(1),
+    stock: z.number().int(),
+    sku: z.string().length(6).regex(/^\d+$/, "SKU must be exactly 6 digits"),
+    price: z.number().min(0).multipleOf(0.01, {
+      message: "Price must have at most 2 decimal places"
+    }),
+    description: z.string().max(255).optional()
 });
-const UpdateSchema = z.object({
-    name: z.string().min(1).optional(),
-    stock: z.number().min(0).optional(),
-    sku: z.string().min(1).regex(/^[a-zA-Z0-9]+$/, {
-        message: "SKU must contain only letters and numbers"
-    }).optional()
-}).refine((data) => Object.keys(data).length > 0, { message: 'Provide at least one field to update' });
+export const CreateSchema = ItemSchema;
+export const UpdateSchema = ItemSchema.partial().refine((data) => Object.keys(data).length > 0, { message: 'Provide at least one field to update' });
+export const IdParam = z.coerce.number().int().positive();
 
 @Controller('items')
 export class ItemController {

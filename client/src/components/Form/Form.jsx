@@ -1,63 +1,135 @@
-import { memo, useState, useEffect, useCallback } from 'react';
-import { Box, Button } from '@mui/material';
-import FormInput from './FormInput';   
+import { memo } from 'react';
+import { useForm } from 'react-hook-form';
+import { Box, Button, Stack } from '@mui/material';
+import FormInput from './FormInput';
 
-const box_style = {
-  mt: 2,
-  display: 'flex',
-  gap: 2,
-  justifyContent: 'flex-end'
-}
+const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) => {
+  const { 
+    control, 
+    handleSubmit, 
+    formState: { errors },
+    reset
+  } = useForm({
+    defaultValues: form,
+    mode: 'onChange'
+  });
 
-const Form = memo(({ form, handleSubmit, updateItem, handleClose }) => {
-  console.log("Form rendered");
-  const [localForm, setLocalForm] = useState(form);
+  const onSubmitHandler = (data) => {
+    const formattedData = {
+      ...data,
+      sku: String(data.sku).padStart(6, '0'),
+      stock: Number(data.stock) || 0,
+      price: Number(data.price) || 0
+    };
 
-  useEffect(() => {
-    setLocalForm(form);
-  }, [form]);
-
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setLocalForm(prev => ({
-      ...prev,
-      [name]: name === 'stock' ? Number(value) : value
-    }));
-  }, []);
-  
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (localForm.id) {
-      updateItem(localForm);
+    if (form.id) {
+      updateItem({ ...formattedData, id: form.id });
     } else {
-      handleSubmit(localForm);
+      onSubmit(formattedData);
     }
+    reset();
   };
 
-  // Get all field names except 'id'
-  const fieldNames = Object.keys(localForm).filter(key => key !== 'id');
-
   return (
-    <form onSubmit={handleFormSubmit}>
-      {fieldNames.map((fieldName) => (
+    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} noValidate>
+      <FormInput
+        name="name"
+        control={control}
+        rules={{ required: 'Name is required' }}
+        error={errors.name}
+      />
+      
+      <FormInput
+        name="sku"
+        control={control}
+        rules={{
+          required: 'SKU is required',
+          pattern: {
+            value: /^\d{6}$/,
+            message: 'SKU must be exactly 6 digits'
+          },
+          minLength: {
+            value: 6,
+            message: 'SKU must be exactly 6 digits'
+          },
+          maxLength: {
+            value: 6,
+            message: 'SKU must be exactly 6 digits'
+          }
+        }}
+        error={errors.sku}
+        inputProps={{
+          maxLength: 6,
+          inputMode: 'numeric',
+          pattern: '[0-9]*',
+          placeholder: '000000'
+        }}
+      />
+      
+      <FormInput
+        name="description"
+        control={control}
+        //rules={{ required: 'Description is required' }}
+        error={errors.description}
+        multiline
+        rows={3}
+      />
+      
+      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
         <FormInput
-          key={fieldName}
-          name={fieldName}
-          value={localForm[fieldName] || ''}
-          onChange={handleChange}
-          type={fieldName === 'stock' ? 'number' : 'text'}
+          name="price"
+          control={control}
+          rules={{
+            //required: 'Price is required',
+            min: {
+              value: 0,
+              message: 'Price must be a positive number'
+            }
+          }}
+          error={errors.price}
+          type="number"
+          inputProps={{
+            min: 0,
+            step: '0.01'
+          }}
         />
-      ))}
-      <Box sx={box_style}>
-        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-        <Button type="submit" variant="contained" color="primary">
-          {localForm.id ? 'Update' : 'Add'} Item
+        
+        <FormInput
+          name="stock"
+          control={control}
+          rules={{
+            //required: 'Stock is required',
+            min: {
+              value: 0,
+              message: 'Stock cannot be negative'
+            },
+            valueAsNumber: true
+          }}
+          error={errors.stock}
+          type="number"
+          inputProps={{
+            min: 0,
+            step: 1
+          }}
+        />
+      </Stack>
+      
+      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button 
+          variant="outlined" 
+          onClick={handleClose}
+        >
+          Cancel
+        </Button>
+        <Button 
+          type="submit" 
+          variant="contained"
+        >
+          {form.id ? 'Update' : 'Add'}
         </Button>
       </Box>
-    </form>
+    </Box>
   );
-}, (prevProps, nextProps) => {
-  return JSON.stringify(prevProps.form) === JSON.stringify(nextProps.form);
 });
 
 export default Form;

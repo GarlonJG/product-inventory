@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "concurrently \"npm run dev --prefix client\" \"npm run start --prefix inventory_server\""
+    "start": "concurrently \"npm run build --prefix client\" \"npm run start --prefix server\"",
+    "start:dev": "concurrently \"npm run dev --prefix client\" \"npm run start:dev --prefix server\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

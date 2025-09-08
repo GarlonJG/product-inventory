@@ -1,21 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import Button from '@mui/material/Button';
+import { useState, useEffect, useCallback } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import {
-  GridRowModes,
-  DataGrid,
-  gridDensitySelector,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
-  Toolbar,
-  ToolbarButton,
-} from '@mui/x-data-grid';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ItemModal from '../../components/Modal/ItemModal';
 import InventoryGrid from '../../components/Grid/InventoryGrid';
 import '../../styles/App.css';
@@ -25,18 +10,6 @@ const initialFormState = {
   name: '', 
   stock: 0, 
   sku: '' 
-};
-
-const dataGridStyle = {
-  height: 500,
-  width: '100%'
-};
-
-const boxStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  mb: 3
 };
 
 function App() {
@@ -65,36 +38,6 @@ function App() {
   const resetInitialState = useCallback(() => {
     setForm(initialFormState);
   }, []);
-
-  const columns = useMemo(() => [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'stock', headerName: 'Stock', width: 120 },
-    { field: 'sku', headerName: 'SKU', width: 150 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      sortable: false,
-      width: 150,
-      renderCell: (params) => (
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Button
-            size="small"
-            startIcon={<EditIcon />}
-            onClick={() => changeItem(params.row)}>
-            Edit
-          </Button>
-          <Button
-            size="small"
-            color="error"
-            startIcon={<DeleteOutlinedIcon />}
-            onClick={(e) => deleteItem(e, params.row.id)}>
-            Delete
-          </Button>
-        </div>
-      ),
-    },
-  ], []);
 
   const handleSubmit = (formData) => {
     fetch('http://localhost:5000/api/items', {
@@ -158,7 +101,7 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="xl">
         <InventoryGrid 
           items={items}
           handleOpen={handleOpen}
