@@ -55,7 +55,7 @@ A full-stack web application for managing product inventory with a modern React 
    npm install
    
    # Install server dependencies
-   cd ../inventory_server
+   cd ../server
    npm install
    cd ..
    ```
