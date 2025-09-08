@@ -2,13 +2,18 @@
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
+<WIP as of 9/7/2025>
+
+## Still to Come
+- Additional Backend and FrontEnd validations
+- Additional layout + Grid styling
+- Additional options/settings for the inventory grid
+
 ## Features
 
 - **Product Management**: Add, view, edit, and delete products
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
-- **Data Grid**: Interactive data table with sorting, filtering, and pagination
-- **Form Validation**: Robust form handling with React Hook Form
-- **Real-time Updates**: View changes immediately as they happen
+- **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination
 
 ## Tech Stack
 
@@ -21,8 +26,10 @@ A full-stack web application for managing product inventory with a modern React 
 
 ### Backend
 - Node.js
-- (Additional backend details will be added based on your server implementation)
-
+- Prisma
+- SQLite
+- NestJS
+  
 ## Getting Started
 
 ### Prerequisites
@@ -61,7 +68,7 @@ A full-stack web application for managing product inventory with a modern React 
 
 Start both frontend and backend servers with a single command:
 ```bash
-npm start
+npm run start
 ```
 
 This will start:
