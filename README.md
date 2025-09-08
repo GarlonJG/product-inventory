@@ -2,18 +2,22 @@
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
-<WIP as of 9/7/2025>
+<WIP as of 9/8/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
 
 ## Still to Come
 - Additional Backend and FrontEnd validations
 - Additional layout + Grid styling
 - Additional options/settings for the inventory grid
+- User authentication and authorization
+- Role-based access control
+- Data import/export functionality
 
 ## Features
 
 - **Product Management**: Add, view, edit, and delete products
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
 - **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination
+- **Database Management**: SQLite database with Prisma ORM for easy data management
 
 ## Tech Stack
 
@@ -26,9 +30,9 @@ A full-stack web application for managing product inventory with a modern React 
 
 ### Backend
 - Node.js
-- Prisma
-- SQLite
-- NestJS
+- Prisma (ORM)
+- SQLite (Database)
+- NestJS (Framework)
   
 ## Getting Started
 
@@ -57,12 +61,52 @@ A full-stack web application for managing product inventory with a modern React 
    # Install server dependencies
    cd ../server
    npm install
-   cd ..
    ```
 
-3. Set up environment variables:
+3. Set up the database:
+   ```bash
+   # Navigate to server directory if not already there
+   cd server
+   
+   # Create and seed the database
+   npx prisma migrate dev --name init
+   
+   # (Optional) Start Prisma Studio to view/edit the database
+   # npx prisma studio
+   ```
+
+4. Set up environment variables:
    - Create `.env` files in both `client` and `server` directories as needed
    - Refer to `.env.example` files for required variables
+   - For the server, ensure you have a valid `DATABASE_URL` in your `.env` file
+
+### Database Management
+
+#### Recreating the Database
+If you need to start with a fresh database:
+
+```bash
+# From the server directory
+rm prisma/inventory.db
+npx prisma migrate dev --name init
+```
+
+#### Running Migrations
+When you make changes to your Prisma schema:
+
+```bash
+# Generate and apply migrations
+npx prisma migrate dev --name your_migration_name
+
+# Apply migrations in production
+npx prisma migrate deploy
+```
+
+#### Viewing the Database
+Use Prisma Studio to explore and edit your database:
+```bash
+npx prisma studio
+```
 
 ### Running the Application
 
@@ -80,6 +124,8 @@ This will start:
 - `npm run start:dev`: Start both frontend and backend in development mode
 - `npm run build`: Build the application for production
 - `npm run lint`: Run ESLint for code quality checks
+- `npm test`: Run tests
+- `npm run test:watch`: Run tests in watch mode
 
 ## Project Structure
 
@@ -95,6 +141,8 @@ product-inventory/
 │       ├── App.jsx        # Main App component
 │       └── main.jsx       # Entry point
 ├── server/                # Backend server
+│   ├── prisma/           # Prisma schema and migrations
+│   │   └── migrations/   # Database migrations
 │   ├── src/              # Server source code
 │   └── package.json      # Server dependencies
 ├── .gitignore
@@ -118,3 +166,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Material-UI](https://mui.com/)
 - [React](https://reactjs.org/)
 - [Vite](https://vitejs.dev/)
+- [Prisma](https://www.prisma.io/)
+- [NestJS](https://nestjs.com/)
