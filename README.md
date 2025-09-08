@@ -61,12 +61,12 @@ A full-stack web application for managing product inventory with a modern React 
    ```
 
 3. Set up environment variables:
-   - Create `.env` files in both `client` and `inventory_server` directories as needed
+   - Create `.env` files in both `client` and `server` directories as needed
    - Refer to `.env.example` files for required variables
 
 ### Running the Application
 
-Start both frontend and backend servers with a single command:
+Start both frontend and backend servers with a single command from project root folder:
 ```bash
 npm run start
 ```
@@ -77,7 +77,7 @@ This will start:
 
 ## Available Scripts
 
-- `npm start`: Start both frontend and backend in development mode
+- `npm run start`: Start both frontend and backend in development mode
 - `npm run build`: Build the application for production
 - `npm run lint`: Run ESLint for code quality checks
 
@@ -88,11 +88,13 @@ product-inventory/
 ├── client/                 # Frontend React application
 │   ├── public/            # Static files
 │   └── src/               # Source files
+│       ├── assets/        # Assets
 │       ├── components/    # Reusable UI components
 │       ├── containers/    # Page components
+│       ├── styles/        # Styles
 │       ├── App.jsx        # Main App component
 │       └── main.jsx       # Entry point
-├── inventory_server/      # Backend server
+├── server/                # Backend server
 │   ├── src/              # Server source code
 │   └── package.json      # Server dependencies
 ├── .gitignore
