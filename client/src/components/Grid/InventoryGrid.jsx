@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import EditToolBar from './EditToolBar';
+import EditToolBar, { getInitialSettings, SETTINGS_STORAGE_KEY } from './EditToolBar';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
@@ -21,17 +21,34 @@ const dataGridStyle = {
 
 const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, deleteItem }) => {
 
+  const [settings, setSettings] = useState(getInitialSettings());
+
+  useEffect(() => {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  }, [settings]);
+
     const columns = useMemo(() => [
         { field: 'name', headerName: 'Name', flex:1, minWidth: 200 },
         { field: 'stock', headerName: 'Stock', width: 100 },
         { field: 'sku', headerName: 'SKU', width: 100, maxLength: 6, align: 'center', truncateText: true },
-        { field: 'price', headerName: 'Price', width: 100 },
+        { 
+          field: 'price', 
+          headerName: 'Price', 
+          width: 100,
+          valueFormatter: (params) => {
+            if (params == null) {
+              return '';
+            }
+            return `$${parseFloat(params).toFixed(2)}`;
+          } 
+        },
         { field: 'description', headerName: 'Description', width: 100 },
         {
           field: 'actions',
           headerName: 'Actions',
           sortable: false,
           disableColumnMenu: true,
+          disableExport: true,
           align: 'right',
           width: 90,
           renderCell: (params) => (
@@ -68,10 +85,16 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 25, 50]}
+                density={settings.density}
                 disableSelectionOnClick
                 slots={{ toolbar: EditToolBar }}
                 slotProps={{
-                  toolbar: { handleOpen, resetInitialState }
+                  toolbar: { 
+                    handleOpen, 
+                    resetInitialState,
+                    settings,
+                    onSettingsChange: setSettings
+                  }
                 }}
                 showToolbar/>
             </div>
