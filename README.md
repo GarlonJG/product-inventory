@@ -77,7 +77,7 @@ This will start:
 
 ## Available Scripts
 
-- `npm run start`: Start both frontend and backend in development mode
+- `npm run start:dev`: Start both frontend and backend in development mode
 - `npm run build`: Build the application for production
 - `npm run lint`: Run ESLint for code quality checks
 
