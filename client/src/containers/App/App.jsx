@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../services/api';
 import ItemModal from '../../components/Modal/ItemModal';
 import InventoryGrid from '../../components/Grid/InventoryGrid';
 import '../../styles/App.css';
@@ -16,16 +17,14 @@ const initialFormState = {
 };
 
 function App() {
-  const [items, setItems] = useState([]);
   const [form, setForm] = useState(initialFormState);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/items')
-      .then(response => response.json())
-      .then(data => setItems(data))
-      .catch(error => console.error('Error fetching items:', error));
-  }, []);
+  // RTK Query hooks
+  const { data: items = [], isLoading, isError } = useGetItemsQuery();
+  const [addItem] = useAddItemMutation();
+  const [updateItem] = useUpdateItemMutation();
+  const [deleteItem] = useDeleteItemMutation();
 
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleClose = useCallback(() => {
@@ -42,64 +41,31 @@ function App() {
     setForm(initialFormState);
   }, []);
 
-  const handleSubmit = (formData) => {
-    fetch('http://localhost:5000/api/items', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(response => response.json())
-      .then(data => {
-        setItems(items => [...items, data]);
-        handleClose();
-      })
-      .catch(error => console.error('Error adding item:', error));
-  };
-
-  const updateItem = (formData) => {
-    const { id: _, ...newData } = formData;
-    const originalItem = items.find(item => item.id === formData.id);
-    const updatedFields = {};
-    
-    Object.keys(newData).forEach(key => {
-      if (newData[key] !== originalItem[key]) {
-        updatedFields[key] =  newData[key];
+  const handleSubmit = useCallback(async (formData) => {
+    try {
+      if (formData.id) {
+        await updateItem(formData).unwrap();
+      } else {
+        await addItem(formData).unwrap();
       }
-    });
-
-    if (Object.keys(updatedFields).length === 0) {
-      console.log("No fields were changed");
+      resetInitialState();
       handleClose();
-      return;
+    } catch (error) {
+      console.error('Error saving item:', error);
     }
+  }, [addItem, updateItem, handleClose]);
 
-    fetch(`http://localhost:5000/api/items/${formData.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedFields)
-    })
-      .then(response => response.json())
-      .then(data => {
-        setItems(items => items.map(item => item.id === data.id ? data : item));
-        handleClose();
-      })
-      .catch(error => console.error('Error updating item:', error));
-  };
-
-  const deleteItem = (e, id) => {
+  const handleDelete = useCallback(async (e, id) => {
     e.preventDefault();
-    fetch(`http://localhost:5000/api/items/${id}`, {
-      method: 'DELETE'
-    })
-      .then(() => {
-        setItems(items => items.filter(item => item.id !== id));
-      })
-      .catch(error => console.error('Error deleting item:', error));
-  };
+    try {
+      await deleteItem(id).unwrap();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  }, [deleteItem]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading items</div>;
 
   return (
     <Box
@@ -133,13 +99,13 @@ function App() {
           handleOpen={handleOpen}
           resetInitialState={resetInitialState}
           changeItem={changeItem}
-          deleteItem={deleteItem}/>
+          deleteItem={handleDelete}
+        />
       </Container>
       <ItemModal
         open={open}
         handleClose={handleClose}
         handleSubmit={handleSubmit}
-        updateItem={updateItem}
         form={form}
       />
     </Box>

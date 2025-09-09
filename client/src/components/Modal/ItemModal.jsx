@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import { Modal } from '@mui/material';
 import Form from '../Form/Form';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 const modal_box = {
@@ -15,8 +17,19 @@ const modal_box = {
   maxWidth: '90%'
 };
 
-const ItemModal = ({ open, form, handleClose, handleSubmit, updateItem }) => {
+const ItemModal = ({ open, form, handleClose, handleSubmit }) => {
   console.log("ItemModal rendered");
+
+  const formRef = useRef();
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (formRef.current) {
+      formRef.current.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true })
+      );
+    }
+  };
 
   return (
     <Modal
@@ -28,7 +41,23 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, updateItem }) => {
         <Typography variant="h6" component="h2">
           {form.id ? 'Edit Item' : 'Add Item'}
         </Typography>
-        <Form form={form} handleSubmit={handleSubmit} updateItem={updateItem} handleClose={handleClose}/>
+        <Form 
+          form={form} 
+          handleSubmit={handleSubmit} 
+          formRef={formRef}/>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button 
+            variant="outlined" 
+            onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="contained"
+            onClick={handleSave}>
+            Save
+          </Button>
+      </Box>
       </Box>
     </Modal>
   );

@@ -1,8 +1,10 @@
-import { StrictMode, Profiler } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { CssBaseline, GlobalStyles } from '@mui/material';
-import './styles/index.css'
-import App from './containers/App/App.jsx'
+import { store } from './app/store';
+import App from './containers/App/App.jsx';
+import './styles/index.css';
 
 // Global styles to ensure full viewport coverage
 const globalStyles = {
@@ -28,8 +30,10 @@ const globalStyles = {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CssBaseline />
-    <GlobalStyles styles={globalStyles} />
-    <App />
+    <Provider store={store}>
+      <CssBaseline />
+      <GlobalStyles styles={globalStyles} />
+      <App />
+    </Provider>
   </StrictMode>
-)
+);

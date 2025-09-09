@@ -1,14 +1,13 @@
 import { memo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import FormInput from './FormInput';
 
-const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) => {
+const Form = memo(({ form, handleSubmit: onSubmit, formRef }) => {
   const { 
     control, 
     handleSubmit, 
-    formState: { errors },
-    reset
+    formState: { errors }
   } = useForm({
     defaultValues: form,
     mode: 'onChange'
@@ -22,16 +21,11 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
       price: Number(data.price) || 0
     };
 
-    if (form.id) {
-      updateItem({ ...formattedData, id: form.id });
-    } else {
-      onSubmit(formattedData);
-    }
-    reset();
+    onSubmit(formattedData);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} noValidate>
+    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} noValidate ref={formRef}>
       <FormInput
         name="name"
         control={control}
@@ -112,21 +106,6 @@ const Form = memo(({ form, handleSubmit: onSubmit, updateItem, handleClose }) =>
           }}
         />
       </Stack>
-      
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button 
-          variant="outlined" 
-          onClick={handleClose}
-        >
-          Cancel
-        </Button>
-        <Button 
-          type="submit" 
-          variant="contained"
-        >
-          {form.id ? 'Edit' : 'Add'}
-        </Button>
-      </Box>
     </Box>
   );
 });
