@@ -44,8 +44,26 @@ function App() {
   const handleSubmit = useCallback(async (formData) => {
     try {
       if (formData.id) {
-        await updateItem(formData).unwrap();
+        // For updates, only send changed fields
+        const originalItem = items.find(item => item.id === formData.id);
+        const updatedFields = {};
+        
+        // Compare each field and only include changed ones
+        Object.keys(formData).forEach(key => {
+          if (formData[key] !== originalItem[key]) {
+            updatedFields[key] = formData[key];
+          }
+        });
+  
+        if (Object.keys(updatedFields).length > 0) {
+          await updateItem({ id: formData.id, ...updatedFields }).unwrap();
+        } else {
+          console.log("No fields were changed");
+          handleClose();
+          return;
+        }
       } else {
+        // For new items, send all fields
         await addItem(formData).unwrap();
       }
       resetInitialState();
@@ -53,7 +71,7 @@ function App() {
     } catch (error) {
       console.error('Error saving item:', error);
     }
-  }, [addItem, updateItem, handleClose]);
+  }, [addItem, updateItem, handleClose, items]);
 
   const handleDelete = useCallback(async (e, id) => {
     e.preventDefault();
