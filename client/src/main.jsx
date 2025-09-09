@@ -21,10 +21,19 @@ const globalStyles = {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 0,
     margin: 0,
     width: '100vw',
     maxWidth: '100vw',
+    background: `
+          linear-gradient(127deg, rgb(255 255 255 / 1), transparent 80%),
+          linear-gradient(217deg, rgb(0 247 218 / 0.8), transparent 80.71%),
+          linear-gradient(336deg, rgb(206 0 247 / 0.8), transparent 80.71%)
+    `,
+    backgroundAttachment: 'fixed',
+    padding: 2
   },
 };
 

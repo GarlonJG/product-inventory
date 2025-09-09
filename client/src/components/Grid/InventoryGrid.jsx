@@ -15,8 +15,7 @@ const boxStyle = {
 };
 
 const dataGridStyle = {
-  height: 500,
-  width: '100%'
+  height: '500px'
 };
 
 const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, deleteItem }) => {
@@ -42,7 +41,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
             return `$${parseFloat(params).toFixed(2)}`;
           } 
         },
-        { field: 'description', headerName: 'Description', width: 100 },
+        { field: 'description', headerName: 'Description', width: 200 },
         {
           field: 'actions',
           headerName: 'Actions',
@@ -79,25 +78,25 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                 </Typography>
             </Box>
         
-            <div sx={dataGridStyle}>
-            <DataGrid
-                rows={items}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10, 25, 50]}
-                density={settings.density}
-                disableSelectionOnClick
-                slots={{ toolbar: EditToolBar }}
-                slotProps={{
-                  toolbar: { 
-                    handleOpen, 
-                    resetInitialState,
-                    settings,
-                    onSettingsChange: setSettings
-                  }
-                }}
-                showToolbar/>
-            </div>
+            <Box sx={dataGridStyle}>
+              <DataGrid
+                  rows={items}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5, 10, 25, 50]}
+                  density={settings.density}
+                  disableSelectionOnClick
+                  slots={{ toolbar: EditToolBar }}
+                  slotProps={{
+                    toolbar: { 
+                      handleOpen, 
+                      resetInitialState,
+                      settings,
+                      onSettingsChange: setSettings
+                    }
+                  }}
+                  showToolbar/>
+            </Box>
         </>
     );
 };

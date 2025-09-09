@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
 import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../services/api';
 import ItemModal from '../../components/Modal/ItemModal';
 import InventoryGrid from '../../components/Grid/InventoryGrid';
@@ -20,7 +18,7 @@ function App() {
   const [form, setForm] = useState(initialFormState);
   const [open, setOpen] = useState(false);
 
-  // RTK Query hooks
+  // hooks
   const { data: items = [], isLoading, isError } = useGetItemsQuery();
   const [addItem] = useAddItemMutation();
   const [updateItem] = useUpdateItemMutation();
@@ -86,32 +84,16 @@ function App() {
   if (isError) return <div>Error loading items</div>;
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        background: `
-          linear-gradient(127deg, rgb(255 255 255 / 1), transparent 80%),
-          linear-gradient(217deg, rgb(0 247 218 / 0.8), transparent 80.71%),
-          linear-gradient(336deg, rgb(206 0 247 / 0.8), transparent 80.71%)
-        `,
-        backgroundAttachment: 'fixed',
-        padding: 2,
-      }}
-    >
-      <CssBaseline />
+    <>
       <Container 
-        maxWidth="xl" 
         sx={{ 
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
           pt: 2, 
           pb: 4 
-        }}
-      >
+        }}>
         <InventoryGrid 
           items={items}
           handleOpen={handleOpen}
@@ -126,7 +108,7 @@ function App() {
         handleSubmit={handleSubmit}
         form={form}
       />
-    </Box>
+    </>
   );
 }
 
