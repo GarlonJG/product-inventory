@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 import ItemModal from '../../components/Modal/ItemModal';
 import InventoryGrid from '../../components/Grid/InventoryGrid';
 import '../../styles/App.css';
@@ -101,9 +102,32 @@ function App() {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        background: `
+          linear-gradient(127deg, rgb(255 255 255 / 1), transparent 80%),
+          linear-gradient(217deg, rgb(0 247 218 / 0.8), transparent 80.71%),
+          linear-gradient(336deg, rgb(206 0 247 / 0.8), transparent 80.71%)
+        `,
+        backgroundAttachment: 'fixed',
+        padding: 2,
+      }}
+    >
       <CssBaseline />
-      <Container maxWidth="xl">
+      <Container 
+        maxWidth="xl" 
+        sx={{ 
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          pt: 2, 
+          pb: 4 
+        }}
+      >
         <InventoryGrid 
           items={items}
           handleOpen={handleOpen}
@@ -118,7 +142,7 @@ function App() {
         updateItem={updateItem}
         form={form}
       />
-    </>
+    </Box>
   );
 }
 
