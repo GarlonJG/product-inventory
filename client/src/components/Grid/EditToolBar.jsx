@@ -3,7 +3,8 @@ import {
   Toolbar, 
   ToolbarButton,  
   ExportCsv,
-  ExportPrint
+  ExportPrint,
+  useGridApiContext
 } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
@@ -18,6 +19,12 @@ import ListItemText from '@mui/material/ListItemText';
 import CheckIcon from '@mui/icons-material/Check';
 import Divider from '@mui/material/Divider';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 const toolbar_btn_style = {
   color: '#474747',
@@ -79,6 +86,7 @@ const SETTINGS_DEFAULT = {
   density: 'standard',
   showCellBorders: false,
   showColumnBorders: false,
+  view: 'grid',
 };
 
 export const getInitialSettings = () => {
@@ -90,10 +98,14 @@ export const getInitialSettings = () => {
   }
 };
 
-const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange}) => {
+const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange, onViewChange}) => {
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const settingsMenuTriggerRef = useRef(null);
+
+  const apiRef = useGridApiContext();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
     return (
       <Toolbar sx={toolbar_style}>
@@ -101,7 +113,6 @@ const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange}
           render={<Button 
                   sx={toolbar_btn_style}
                   size="small"
-                  tabIndex={0}
                   startIcon={<AddIcon sx={icon_style} />}
                   onClick={() => {
                     resetInitialState();
@@ -148,6 +159,25 @@ const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange}
             </MenuItem>
           ))}
           <Divider/>
+          <MenuItem>
+            <Tooltip title={settings.view === 'grid' ? 'Switch to List View' : 'Switch to Grid View'}>
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewChange();
+                }}
+                color="inherit"
+                aria-label="Toggle view"
+              >
+                {settings.view === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {settings.view === 'grid' ? 'List View' : 'Grid View'}
+                </Typography>
+              </IconButton>
+            </Tooltip>
+          </MenuItem>
+
           <MenuItem>
             <ExportCsv sx={menu_item_style}>
               <DownloadIcon sx={icon_style} /> Export

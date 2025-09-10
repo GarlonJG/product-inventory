@@ -7,6 +7,13 @@ import EditToolBar, { getInitialSettings, SETTINGS_STORAGE_KEY } from './EditToo
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import InventoryList from './InventoryList';
+
+import ToolbarMenu from './ToolbarMenu';
+import { exportCsvFromItems } from '../../utils/exportCsv';
+
 const boxStyle = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -19,12 +26,22 @@ const dataGridStyle = {
 };
 
 const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, deleteItem }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const [settings, setSettings] = useState(getInitialSettings());
 
-  const [settings, setSettings] = useState(getInitialSettings());
+    useEffect(() => {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    }, [settings]);
 
-  useEffect(() => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-  }, [settings]);
+    useEffect(() => {
+      if (!isMobile) {
+        setSettings({
+          ...settings,
+          view: 'grid'
+        });
+      }
+    }, [isMobile]);
 
     const columns = useMemo(() => [
         { field: 'name', headerName: 'Name', flex:1, minWidth: 200 },
@@ -70,16 +87,57 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
         },
       ], []);
 
+    const toggleView = () => {
+      setSettings(prev => ({
+        ...prev,
+        view: prev.view === 'grid' ? 'list' : 'grid'
+      }));
+    };
+
+    const onExportCsv = () => {
+      exportCsvFromItems(items);
+    };
+  
+    const onPrint = () => {
+      // Simple approach: print current window, or open new window with formatted list
+      window.print();
+    };
+
+    const onAdd = () => {
+      handleOpen();
+      resetInitialState();
+    };
+
+    const onResetSettings = () => {
+      setSettings(getInitialSettings());
+      localStorage.removeItem(SETTINGS_STORAGE_KEY);
+    };
+
     return (
-        <>
-            <Box sx={boxStyle}>
-                <Typography variant="h4" component="h1">
-                    Inventory
-                </Typography>
-            </Box>
-        
-            <Box sx={dataGridStyle}>
-              <DataGrid
+      <>
+        <Box sx={boxStyle}>
+          <Typography variant="h4" component="h1">
+              Inventory
+          </Typography>
+        </Box>
+        {isMobile ? (
+          <>
+          <ToolbarMenu
+            settings={settings}
+            onSettingsChange={setSettings}
+            onViewChange={toggleView}
+            onAdd={onAdd}
+            onExportCsv={onExportCsv}
+            onPrint={onPrint}
+            onResetSettings={onResetSettings}
+          />
+          <InventoryList items={items} onEdit={changeItem} onDelete={deleteItem}/>
+          </>
+        ) : (
+          <>
+            {settings.view === 'grid' ? (
+              <Box sx={dataGridStyle}>
+                <DataGrid
                   rows={items}
                   columns={columns}
                   pageSize={5}
@@ -92,12 +150,29 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                       handleOpen, 
                       resetInitialState,
                       settings,
-                      onSettingsChange: setSettings
+                      onSettingsChange: setSettings,
+                      onViewChange: toggleView
                     }
                   }}
                   showToolbar/>
-            </Box>
-        </>
+              </Box>
+            ) : (
+              <>
+              <ToolbarMenu
+                settings={settings}
+                onSettingsChange={setSettings}
+                onViewChange={toggleView}
+                onAdd={onAdd}
+                onExportCsv={onExportCsv}
+                onPrint={onPrint}
+                onResetSettings={onResetSettings}
+              />
+              <InventoryList items={items} onEdit={changeItem} onDelete={deleteItem}/>
+              </>
+            )}
+          </>
+        )}
+      </>
     );
 };
 
