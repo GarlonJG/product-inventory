@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import Container from '@mui/material/Container';
-import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../services/api';
+import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../features/items/api';
 import ItemModal from '../../components/Modal/ItemModal';
 import InventoryGrid from '../../components/Grid/InventoryGrid';
 import '../../styles/App.css';

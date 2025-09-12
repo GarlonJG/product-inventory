@@ -23,7 +23,6 @@ const globalStyles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0,
     margin: 0,
     width: '100vw',
     maxWidth: '100vw',

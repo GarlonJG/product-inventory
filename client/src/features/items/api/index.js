@@ -1,8 +1,8 @@
 export {
-  itemsApi as api,
+  itemsApi,
   useGetItemsQuery,
   useGetItemQuery,
   useAddItemMutation,
   useUpdateItemMutation,
   useDeleteItemMutation,
-} from '../features/items/api/itemsApi';
+} from './itemsApi';
