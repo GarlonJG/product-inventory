@@ -1,4 +1,4 @@
-import { baseApi } from '../../../shared/lib/baseApi';
+import { baseApi } from '../../../../shared/lib/baseApi';
 
 export const itemsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

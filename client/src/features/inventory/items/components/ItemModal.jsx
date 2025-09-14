@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Modal } from '@mui/material';
-import Form from '../Form/Form';
+import Form from '../../../../shared/ui/Form/Form';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';

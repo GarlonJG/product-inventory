@@ -12,7 +12,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import InventoryList from './InventoryList';
 
 import ToolbarMenu from './ToolbarMenu';
-import { exportCsvFromItems } from '../../utils/exportCsv';
+import { exportCsvFromItems } from '../../../shared/utils/exportCsv';
 
 const boxStyle = {
   display: 'flex',

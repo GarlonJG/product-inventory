@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import Container from '@mui/material/Container';
-import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../features/items/api';
-import ItemModal from '../../components/Modal/ItemModal';
-import InventoryGrid from '../../components/Grid/InventoryGrid';
+import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteItemMutation } from '../../features/inventory/items/api';
+import ItemModal from '../../features/inventory/items/components/ItemModal';
+import InventoryGrid from '../../features/inventory/components/InventoryGrid';
 import '../../styles/App.css';
 
 const initialFormState = { 
