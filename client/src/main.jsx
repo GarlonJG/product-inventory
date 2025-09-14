@@ -5,6 +5,7 @@ import { CssBaseline, GlobalStyles } from '@mui/material';
 import { store } from './app/store';
 import App from './containers/App/App.jsx';
 import './styles/index.css';
+import { ToastProvider } from './app/providers/ToastProvider';
 
 // Global styles to ensure full viewport coverage
 const globalStyles = {
@@ -41,7 +42,9 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <CssBaseline />
       <GlobalStyles styles={globalStyles} />
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </Provider>
   </StrictMode>
 );

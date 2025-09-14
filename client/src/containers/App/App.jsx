@@ -4,6 +4,7 @@ import { useGetItemsQuery, useAddItemMutation, useUpdateItemMutation, useDeleteI
 import ItemModal from '../../features/inventory/items/components/ItemModal';
 import InventoryGrid from '../../features/inventory/components/InventoryGrid';
 import '../../styles/App.css';
+import { useToast } from '../../app/providers/ToastProvider';
 
 const initialFormState = { 
   id: '', 
@@ -17,6 +18,7 @@ const initialFormState = {
 function App() {
   const [form, setForm] = useState(initialFormState);
   const [open, setOpen] = useState(false);
+  const { notify } = useToast();
 
   // hooks
   const { data: items = [], isLoading, isError } = useGetItemsQuery();
@@ -55,30 +57,36 @@ function App() {
   
         if (Object.keys(updatedFields).length > 0) {
           await updateItem({ id: formData.id, ...updatedFields }).unwrap();
+          notify({ message: 'Item updated', severity: 'success' });
         } else {
           console.log("No fields were changed");
+          notify({ message: 'No fields were changed', severity: 'info' });
           handleClose();
           return;
         }
       } else {
         // For new items, send all fields
         await addItem(formData).unwrap();
+        notify({ message: 'Item created', severity: 'success' });
       }
       resetInitialState();
       handleClose();
     } catch (error) {
       console.error('Error saving item:', error);
+      notify({ message: 'Error saving item', severity: 'error' });
     }
-  }, [addItem, updateItem, handleClose, items]);
+  }, [addItem, updateItem, handleClose, items, notify]);
 
   const handleDelete = useCallback(async (e, id) => {
     e.preventDefault();
     try {
       await deleteItem(id).unwrap();
+      notify({ message: 'Item deleted', severity: 'success' });
     } catch (error) {
       console.error('Error deleting item:', error);
+      notify({ message: 'Error deleting item', severity: 'error' });
     }
-  }, [deleteItem]);
+  }, [deleteItem, notify]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading items</div>;
