@@ -46,11 +46,13 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
                 }
             }}
             error={errors.sku}
-            inputProps={{
-              maxLength: 6,
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-              placeholder: '000000'
+            slotProps={{
+              htmlInput: {
+                maxLength: 6,
+                inputMode: 'numeric',
+                pattern: '[0-9]*',
+                placeholder: '000000'
+              }
             }}/>
           
           <FormInput
@@ -67,10 +69,22 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
               type="number"
               rules={{
                 required: 'Price is required',
-                min: { value: 0, message: 'Price must be positive' }
+                min: { value: 0, message: 'Price must be positive' },
+                pattern: {
+                  value: /^\d*\.\d{2}$/,
+                  message: 'Price must have 2 decimal places 0.00'
+                }
               }}
               error={errors.price}
-              inputProps={{ min: 0, step: '0.01' }}/>
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  step: '0.01',
+                  inputMode: 'decimal',
+                  pattern: '[0-9]*',
+                  placeholder: '0.00'
+                }
+              }}/>
             
             <FormInput
               name="stock"
@@ -82,7 +96,15 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
                 valueAsNumber: true
               }}
               error={errors.stock}
-              inputProps={{ min: 0, step: 1}}/>
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  step: 1,
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                  placeholder: '0'
+                }
+              }}/>
           </Stack>
         </Box>
       )}

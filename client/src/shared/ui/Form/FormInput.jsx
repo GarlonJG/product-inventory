@@ -25,18 +25,6 @@ const FormInput = memo(({
           margin="normal"
           error={!!error}
           helperText={error?.message || helperText}
-          inputProps={{
-            ...(name === 'sku' && {
-              maxLength: 6,
-              inputMode: 'numeric',
-              pattern: '[0-9]*'
-            }),
-            ...(name === 'stock' && {
-              min: 0,
-              step: 1,
-              type: 'number'
-            })
-          }}
           {...props}
         />
       )}
