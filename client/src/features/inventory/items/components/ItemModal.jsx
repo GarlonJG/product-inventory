@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Modal } from '@mui/material';
-import Form from '../../../../shared/ui/Form/Form';
+import ItemForm from './ItemForm';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -41,7 +41,7 @@ const ItemModal = ({ open, form, handleClose, handleSubmit }) => {
         <Typography variant="h6" component="h2">
           {form.id ? 'Edit Item' : 'Add Item'}
         </Typography>
-        <Form 
+        <ItemForm
           form={form} 
           handleSubmit={handleSubmit} 
           formRef={formRef}/>
