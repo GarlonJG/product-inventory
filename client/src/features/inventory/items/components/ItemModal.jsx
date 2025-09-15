@@ -3,7 +3,8 @@ import { Modal } from '@mui/material';
 import ItemForm from './ItemForm';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 
 const modal_box = {
   position: 'absolute', 
@@ -17,7 +18,7 @@ const modal_box = {
   maxWidth: '90%'
 };
 
-const ItemModal = ({ open, form, handleClose, handleSubmit }) => {
+const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting }) => {
   console.log("ItemModal rendered");
 
   const formRef = useRef();
@@ -38,26 +39,27 @@ const ItemModal = ({ open, form, handleClose, handleSubmit }) => {
       aria-labelledby="item-modal-title"
       aria-describedby="item-modal-description">
       <Box sx={modal_box}>
-        <Typography variant="h6" component="h2">
-          {form.id ? 'Edit Item' : 'Add Item'}
-        </Typography>
-        <ItemForm
-          form={form} 
-          handleSubmit={handleSubmit} 
-          formRef={formRef}/>
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <Button 
-            variant="outlined" 
-            onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
-            variant="contained"
-            onClick={handleSave}>
-            Save
-          </Button>
-      </Box>
+        <DialogTitle>{form.id ? 'Edit Item' : 'Add Item'}</DialogTitle>
+          <ItemForm
+            form={form} 
+            handleSubmit={handleSubmit} 
+            formRef={formRef}/>
+          <DialogActions sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button 
+              variant="outlined" 
+              onClick={handleClose}
+              disabled={isSubmitting}
+              >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained"
+              onClick={handleSave}
+              disabled={isSubmitting}>
+              Save
+            </Button>
+        </DialogActions>
       </Box>
     </Modal>
   );
