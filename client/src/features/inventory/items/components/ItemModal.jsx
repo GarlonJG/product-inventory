@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Modal } from '@mui/material';
 import ItemForm from './ItemForm';
 import Box from '@mui/material/Box';
@@ -18,17 +18,24 @@ const modal_box = {
   maxWidth: '90%'
 };
 
-const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting }) => {
+const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting, error: propError }) => {
   console.log("ItemModal rendered");
-
+  const [error, setError] = useState(null);
   const formRef = useRef();
+
+  // Reset error when modal is opened/closed
+  useEffect(() => {
+    if (open) {
+      setError(propError);
+    } else {
+      setError(null);
+    }
+  }, [open, propError]);
 
   const handleSave = (e) => {
     e.preventDefault();
     if (formRef.current) {
-      formRef.current.dispatchEvent(
-        new Event('submit', { cancelable: true, bubbles: true })
-      );
+      formRef.current.submit();
     }
   };
 
@@ -40,25 +47,26 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting }) => {
       aria-describedby="item-modal-description">
       <Box sx={modal_box}>
         <DialogTitle>{form.id ? 'Edit Item' : 'Add Item'}</DialogTitle>
-          <ItemForm
-            form={form} 
-            handleSubmit={handleSubmit} 
-            formRef={formRef}/>
-          <DialogActions sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button 
-              variant="outlined" 
-              onClick={handleClose}
-              disabled={isSubmitting}
-              >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              variant="contained"
-              onClick={handleSave}
-              disabled={isSubmitting}>
-              Save
-            </Button>
+        <ItemForm
+          form={form} 
+          handleSubmit={handleSubmit} 
+          ref={formRef}
+          error={error}
+          resetError={() => setError(null)} />
+        <DialogActions sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button 
+            variant="outlined" 
+            onClick={handleClose}
+            disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="contained"
+            onClick={handleSave}
+            disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save'}
+          </Button>
         </DialogActions>
       </Box>
     </Modal>

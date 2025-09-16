@@ -1,19 +1,15 @@
 // item.controller.ts
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { ItemService } from './item.service';
+import { itemSchema } from '@shared/validations/item.schema';
 import { z } from 'zod';
 
-export const ItemSchema = z.object({
-    name: z.string().max(100).min(1),
-    stock: z.number().int(),
-    sku: z.string().length(6).regex(/^\d+$/, "SKU must be exactly 6 digits"),
-    price: z.number().min(0).multipleOf(0.01, {
-      message: "Price must have at most 2 decimal places"
-    }),
-    description: z.string().max(255).optional()
-});
+export const ItemSchema = itemSchema;
 export const CreateSchema = ItemSchema;
-export const UpdateSchema = ItemSchema.partial().refine((data) => Object.keys(data).length > 0, { message: 'Provide at least one field to update' });
+export const UpdateSchema = ItemSchema.partial().refine(
+  (data) => Object.keys(data).length > 0, 
+  { message: 'Provide at least one field to update' }
+);
 export const IdParam = z.coerce.number().int().positive();
 
 @Controller('items')
@@ -41,8 +37,31 @@ export class ItemController {
 
   @Post()
   async create(@Body() body: any) {
-    const data = CreateSchema.parse(body);
-    return this.itemService.create(data);
+    try {
+      const data = CreateSchema.parse(body);
+      return await this.itemService.create(data);
+    } catch (error) {
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        const errorMessages = error.issues.map(issue => ({
+          field: issue.path.join('.'),
+          message: issue.message
+        }));
+        throw new BadRequestException({
+          statusCode: 400,
+          message: 'Validation failed',
+          errors: errorMessages
+        });
+      }
+      
+      // Handle Prisma unique constraint violation (duplicate SKU)
+      if (error?.code === 'P2002') {
+        throw new ConflictException('SKU already exists');
+      }
+      
+      // Re-throw other errors
+      throw error;
+    }
   }
 
   @Patch(':id')

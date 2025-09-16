@@ -1,15 +1,48 @@
-// client/src/features/inventory/items/components/ItemForm.jsx
-import { memo } from 'react';
+import { memo, forwardRef, useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
 import Form from '../../../../shared/ui/Form/Form';
 import FormInput from '../../../../shared/ui/Form/FormInput';
+import { useToast } from '../../../../app/providers/ToastProvider';
+import { itemSchema } from '../../../../shared/validations/item.schema';
 
-const ItemForm = memo(({ form, handleSubmit, formRef }) => {
+const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError }, ref) => {
+  const { notify } = useToast();
+
+  // Show error message when error prop changes
+  useEffect(() => {
+    if (error) {
+      const errorMessage = error.data?.message || 'An error occurred while saving the item';
+      notify({ message: errorMessage, severity: 'error' });
+      
+      // Process field-specific errors
+      if (Array.isArray(error.data?.errors)) {
+        const fieldErrors = error.data.errors.reduce((acc, err) => {
+          if (err.field) {
+            // If we already have an error for this field, append the new message
+            if (acc[err.field]) {
+              acc[err.field].message += `, ${err.message}`;
+            } else {
+              acc[err.field] = { type: 'manual', message: err.message };
+            }
+          }
+          return acc;
+        }, {});
+        
+        if (ref?.current && Object.keys(fieldErrors).length > 0) {
+          ref.current.setErrors(fieldErrors);
+        }
+      }
+      
+      // Reset the error after showing it
+      resetError?.();
+    }
+  }, [error, notify, ref, resetError]);
+
   const transformValues = (data) => ({
     ...data,
     sku: String(data.sku).padStart(6, '0'),
     stock: Number(data.stock) || 0,
-    price: Number(data.price) || 0
+    price: Number(parseFloat(data.price).toFixed(2)) || 0
   });
 
   return (
@@ -17,8 +50,9 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
       defaultValues={form}
       transformValues={transformValues}
       externalOnSubmit={handleSubmit}
-      formRef={formRef}>
-
+      ref={ref}
+      schema={itemSchema}
+    >
       {({ control, errors }) => (
         <Box>
           <FormInput
@@ -30,28 +64,14 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
           <FormInput
             name="sku"
             control={control}
-            rules={{
-                required: 'SKU is required',
-                pattern: {
-                  value: /^\d{6}$/,
-                  message: 'SKU must be exactly 6 digits'
-                },
-                minLength: {
-                  value: 6,
-                  message: 'SKU must be exactly 6 digits'
-                },
-                maxLength: {
-                  value: 6,
-                  message: 'SKU must be exactly 6 digits'
-                }
-            }}
             error={errors.sku}
+            onlyNumbers
             slotProps={{
               htmlInput: {
                 maxLength: 6,
                 inputMode: 'numeric',
-                pattern: '[0-9]*',
-                placeholder: '000000'
+                placeholder: '000000',
+                pattern: '[0-9]*'
               }
             }}/>
           
@@ -67,21 +87,13 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
               name="price"
               control={control}
               type="number"
-              rules={{
-                required: 'Price is required',
-                min: { value: 0, message: 'Price must be positive' },
-                pattern: {
-                  value: /^\d*\.\d{2}$/,
-                  message: 'Price must have 2 decimal places 0.00'
-                }
-              }}
+              onlyNumbers
               error={errors.price}
               slotProps={{
                 htmlInput: {
                   min: 0,
                   step: '0.01',
                   inputMode: 'decimal',
-                  pattern: '[0-9]*',
                   placeholder: '0.00'
                 }
               }}/>
@@ -90,18 +102,13 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
               name="stock"
               control={control}
               type="number"
-              rules={{
-                required: 'Stock is required',
-                min: { value: 0, message: 'Stock cannot be negative' },
-                valueAsNumber: true
-              }}
+              onlyNumbers
               error={errors.stock}
               slotProps={{
                 htmlInput: {
                   min: 0,
                   step: 1,
                   inputMode: 'numeric',
-                  pattern: '[0-9]*',
                   placeholder: '0'
                 }
               }}/>
@@ -110,6 +117,6 @@ const ItemForm = memo(({ form, handleSubmit, formRef }) => {
       )}
     </Form>
   );
-});
+}));
 
 export default ItemForm;
