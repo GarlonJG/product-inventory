@@ -2,19 +2,19 @@
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
-<WIP as of 9/8/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
+<WIP as of 9/16/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
 
 ## Still to Come
-- Additional Backend and FrontEnd validations
 - Additional layout + Grid styling
 - Additional options/settings for the inventory grid
 - User authentication and authorization
 - Role-based access control
-- Data import/export functionality
+- Data import functionality
 
 ## Features
 
-- **Product Management**: Add, view, edit, and delete products
+- **Product Management**: Add, view, edit, and delete products with full CRUD operations
+- **Form Validation**: Comprehensive client and server-side validation using Zod
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
 - **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination
 - **Database Management**: SQLite database with Prisma ORM for easy data management
@@ -25,20 +25,30 @@ A full-stack web application for managing product inventory with a modern React 
 - React 19
 - Vite (Build Tool)
 - Material-UI (MUI) v7
-- React Hook Form
+- React Hook Form with Zod validation
 - Emotion (for styling)
+- Redux Toolkit RTK Query (data fetching and caching)
 
 ### Backend
 - Node.js
 - Prisma (ORM)
 - SQLite (Database)
 - NestJS (Framework)
-  
+- Zod for runtime validation
+- Class-validator for DTO validation
+
+## Data Validation
+
+The application implements a robust validation system:
+
+- **Client-side Validation**: Immediate feedback in forms using React Hook Form and Zod
+- **Server-side Validation**: Additional validation on the server using the same Zod schemas
+
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v16 or later)
+- Node.js (v18 or later)
 - npm or yarn
 
 ### Installation
@@ -49,7 +59,7 @@ A full-stack web application for managing product inventory with a modern React 
    cd product-inventory
    ```
 
-2. Install dependencies:
+2. Install dependencies for both client and server:
    ```bash
    # Install root dependencies
    npm install
@@ -85,7 +95,7 @@ A full-stack web application for managing product inventory with a modern React 
 #### Recreating the Database
 If you need to start with a fresh database:
 
-```bash
+   ```bash
 # From the server directory
 rm prisma/inventory.db
 npx prisma migrate dev --name init
@@ -148,6 +158,14 @@ product-inventory/
 ├── .gitignore
 └── package.json          # Root project configuration
 ```
+
+## Available Scripts
+
+- `npm run start:dev`: Start both frontend and backend in development mode
+- `npm run build`: Build the application for production
+- `npm run lint`: Run ESLint for code quality checks
+- `npm test`: Run tests
+- `npm run test:watch`: Run tests in watch mode
 
 ## Contributing
 
