@@ -28,9 +28,26 @@ export class SanitizationMiddleware implements NestMiddleware {
   }
 
   use(req: Request, res: Response, next: NextFunction) {
+    // Body is modifiable, not query or params
     if (req.body) req.body = this.sanitize(req.body);
-    if (req.query) req.query = this.sanitize(req.query);
-    if (req.params) req.params = this.sanitize(req.params);
+
+    // Sanitize each query parameter individually
+    if (req.query) {
+        for (const key in req.query) {
+            if (Object.prototype.hasOwnProperty.call(req.query, key)) {
+                req.query[key] = this.sanitize(req.query[key]);
+            }
+        }
+    }
+
+    // Sanitize each param individually
+    if (req.params) {
+        for (const key in req.params) {
+            if (Object.prototype.hasOwnProperty.call(req.params, key)) {
+                req.params[key] = this.sanitize(req.params[key]);
+            }
+        }
+    }
     next();
   }
 }
