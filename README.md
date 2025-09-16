@@ -35,7 +35,7 @@ A full-stack web application for managing product inventory with a modern React 
 - SQLite (Database)
 - NestJS (Framework)
 - Zod for runtime validation
-- Class-validator for DTO validation
+- Middleware implemented for sanitization (DOMPurify) and security (helmet, rate-limit)
 
 ## Data Validation
 
