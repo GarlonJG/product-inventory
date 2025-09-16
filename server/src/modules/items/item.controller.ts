@@ -1,11 +1,11 @@
 // item.controller.ts
 import { Controller, Get, Post, Patch, Delete, Param, Body, Query, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { ItemService } from './item.service';
-import { itemSchema } from '@shared/validations/item.schema';
+import { itemSchema, createItemSchema } from '@shared/validations/item.schema';
 import { z } from 'zod';
 
 export const ItemSchema = itemSchema;
-export const CreateSchema = ItemSchema;
+export const CreateSchema = createItemSchema;
 export const UpdateSchema = ItemSchema.partial().refine(
   (data) => Object.keys(data).length > 0, 
   { message: 'Provide at least one field to update' }
@@ -32,14 +32,14 @@ export class ItemController {
     const parsedId = IdParam.parse(id);
     const item = await this.itemService.findOne(parsedId);
     if (!item) throw new NotFoundException('Item not found');
-    return item;
+    return itemSchema.parse(item);
   }
 
   @Post()
   async create(@Body() body: any) {
     try {
       const data = CreateSchema.parse(body);
-      return await this.itemService.create(data);
+      return itemSchema.parse(await this.itemService.create(data));
     } catch (error) {
       // Handle Zod validation errors
       if (error instanceof z.ZodError) {
@@ -69,7 +69,7 @@ export class ItemController {
     const parsedId = IdParam.parse(id);
     const data = UpdateSchema.parse(body);
     try {
-      return await this.itemService.update(parsedId, data);
+      return itemSchema.parse(await this.itemService.update(parsedId, data));
     } catch (err) {
       // Prisma error handling, e.g. code P2025 (not found)
       if ((err?.code) === 'P2025') throw new NotFoundException('Item not found');

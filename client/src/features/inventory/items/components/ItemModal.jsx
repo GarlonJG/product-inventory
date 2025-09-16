@@ -52,6 +52,7 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting, error:
           handleSubmit={handleSubmit} 
           ref={formRef}
           error={error}
+          isEditing={form.id}
           resetError={() => setError(null)} />
         <DialogActions sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <Button 

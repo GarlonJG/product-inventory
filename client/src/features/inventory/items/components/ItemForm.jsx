@@ -3,9 +3,9 @@ import { Box, Stack } from '@mui/material';
 import Form from '../../../../shared/ui/Form/Form';
 import FormInput from '../../../../shared/ui/Form/FormInput';
 import { useToast } from '../../../../app/providers/ToastProvider';
-import { itemSchema } from '../../../../shared/validations/item.schema';
+import { createItemSchema, itemSchema } from '../../../../shared/validations/item.schema';
 
-const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError }, ref) => {
+const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError, isEditing = false }, ref) => {
   const { notify } = useToast();
 
   // Show error message when error prop changes
@@ -18,7 +18,6 @@ const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError }, ref
       if (Array.isArray(error.data?.errors)) {
         const fieldErrors = error.data.errors.reduce((acc, err) => {
           if (err.field) {
-            // If we already have an error for this field, append the new message
             if (acc[err.field]) {
               acc[err.field].message += `, ${err.message}`;
             } else {
@@ -38,12 +37,22 @@ const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError }, ref
     }
   }, [error, notify, ref, resetError]);
 
-  const transformValues = (data) => ({
-    ...data,
-    sku: String(data.sku).padStart(6, '0'),
-    stock: Number(data.stock) || 0,
-    price: Number(parseFloat(data.price).toFixed(2)) || 0
-  });
+  const transformValues = (data) => {
+    const transformed = {
+      ...data,
+      sku: String(data.sku).padStart(6, '0'),
+      stock: Number(data.stock) || 0,
+      price: Number(parseFloat(data.price).toFixed(2)) || 0
+    };
+    
+    // Only include id if we're editing
+    if (!isEditing) {
+      const { id, ...rest } = transformed;
+      return rest;
+    }
+    
+    return transformed;
+  };
 
   return (
     <Form
@@ -51,7 +60,7 @@ const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError }, ref
       transformValues={transformValues}
       externalOnSubmit={handleSubmit}
       ref={ref}
-      schema={itemSchema}
+      schema={isEditing ? itemSchema : createItemSchema}
     >
       {({ control, errors }) => (
         <Box>

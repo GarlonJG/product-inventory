@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const itemSchema = z.object({
+// Base schema with all fields
+const baseItemSchema = z.object({
     name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
     sku: z.string()
         .length(6, 'SKU must be exactly 6 digits')
@@ -29,4 +30,13 @@ export const itemSchema = z.object({
     )
 });
 
+// Schema for create operations (no ID needed)
+export const createItemSchema = baseItemSchema;
+
+// Schema for update operations (ID required)
+export const itemSchema = baseItemSchema.extend({
+    id: z.coerce.number().int().positive()
+});
+
 export type ItemInput = z.infer<typeof itemSchema>;
+export type CreateItemInput = z.infer<typeof createItemSchema>;
