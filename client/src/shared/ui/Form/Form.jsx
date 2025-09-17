@@ -1,3 +1,4 @@
+import React from 'react';
 import { memo, forwardRef, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +10,7 @@ const Form = memo(forwardRef(({
   mode = 'onChange',
   transformValues,
   schema,
+  id = 'default-form-id',
 }, ref) => {
   const { 
     control, 
@@ -44,7 +46,7 @@ const Form = memo(forwardRef(({
   }));
 
   return (
-    <form onSubmit={formHandleSubmit(onSubmitHandler)} noValidate>
+    <form id={id} aria-label={id} onSubmit={formHandleSubmit(onSubmitHandler)} noValidate>
       {children({ control, errors })}
     </form>
   );

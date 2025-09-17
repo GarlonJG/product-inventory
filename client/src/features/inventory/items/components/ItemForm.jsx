@@ -1,3 +1,4 @@
+import React from 'react';
 import { memo, forwardRef, useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
 import Form from '../../../../shared/ui/Form/Form';
@@ -61,6 +62,7 @@ const ItemForm = memo(forwardRef(({ form, handleSubmit, error, resetError, isEdi
       externalOnSubmit={handleSubmit}
       ref={ref}
       schema={isEditing ? itemSchema : createItemSchema}
+      id="item-form"
     >
       {({ control, errors }) => (
         <Box>

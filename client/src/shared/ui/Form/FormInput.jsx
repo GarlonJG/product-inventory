@@ -1,3 +1,4 @@
+import React from 'react';
 import { memo } from 'react';
 import { TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
@@ -8,6 +9,7 @@ const FormInput = memo(({
   rules = {}, 
   error,
   helperText,
+  onlyNumbers,
   ...props 
 }) => {
   const label = name.charAt(0).toUpperCase() + name.slice(1);
@@ -15,7 +17,7 @@ const FormInput = memo(({
   const inputMode = props?.slotProps?.htmlInput?.inputMode;
   const isDecimal = inputMode === 'decimal';
 
-  const numberHandlers = props?.onlyNumbers ? {
+  const numberHandlers = onlyNumbers ? {
     onKeyPress: (e) => {
       if (isDecimal ? !/[0-9.]/.test(e.key) : !/[0-9]/.test(e.key)) {
         e.preventDefault();
