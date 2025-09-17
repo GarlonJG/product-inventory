@@ -8,18 +8,20 @@ describe('<ItemModal />', () => {
   };
 
   it('renders', () => {
-    // see: https://on.cypress.io/mounting-react
     cy.mount(<ItemModal form={mockProps.form} />)
     cy.injectAxe();
-    cy.checkA11y(undefined, undefined, (violations) => {
-      // This will print the violations to the Cypress command log
-      cy.task('log', `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} detected`);
-      violations.forEach((violation) => {
-        cy.task('log', `- ${violation.description} (${violation.id}): ${violation.helpUrl}`);
-        violation.nodes.forEach((node) => {
-          cy.task('log', `  - ${node.failureSummary}`);
-        });
-      });
-    }, true); // The 'true' makes the test fail if there are violations
+    
+    //Configure aXe to exclude document-level rules for this modal test
+    //This is because the modal is not a complete document
+    const axeOptions = {
+      rules: {
+        'html-has-lang': { enabled: false },      // Document-level rule
+        'landmark-one-main': { enabled: false },  // Document-level rule
+        'page-has-heading-one': { enabled: false } // Document-level rule
+      }
+    };
+
+    //Check accessibility with custom options
+    cy.checkA11y(undefined, axeOptions);
   })
 })
