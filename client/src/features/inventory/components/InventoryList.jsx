@@ -2,9 +2,11 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Button, Divider, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { useNavigate } from 'react-router-dom';
 
-const InventoryList = ({ items, onEdit, onDelete }) => {
+const InventoryList = ({ items, onDelete }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ width: '100%', p: 1, backgroundColor: 'white', borderStyle: 'solid', borderColor: '#d9d9d9', borderWidth: '0 1px 1px 1px', borderRadius: '0 0 5px 5px' }}>
@@ -55,7 +57,7 @@ const InventoryList = ({ items, onEdit, onDelete }) => {
                 <Button
                   size="small"
                   startIcon={<EditIcon />}
-                  onClick={() => onEdit(item)}
+                  onClick={() => navigate(`/${item.id}/edit`)}
                   aria-label="Edit item"
                 />
                 <Button

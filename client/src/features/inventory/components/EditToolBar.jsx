@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 
 const toolbar_btn_style = {
   color: '#474747',
@@ -98,7 +99,7 @@ export const getInitialSettings = () => {
   }
 };
 
-const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange, onViewChange}) => {
+const EditToolBar = ({settings, onSettingsChange, onViewChange}) => {
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const settingsMenuTriggerRef = useRef(null);
@@ -106,6 +107,8 @@ const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange,
   const apiRef = useGridApiContext();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const navigate = useNavigate();
   
     return (
       <Toolbar sx={toolbar_style}>
@@ -114,9 +117,7 @@ const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange,
                   sx={toolbar_btn_style}
                   size="small"
                   startIcon={<AddIcon sx={icon_style} />}
-                  onClick={() => {
-                    resetInitialState();
-                    handleOpen()}}>
+                  onClick={() => navigate('/new')}>
                     Add Item
                   </Button>}/>
         <Tooltip title="Settings">
@@ -127,8 +128,8 @@ const EditToolBar = ({handleOpen, resetInitialState, settings, onSettingsChange,
               aria-haspopup="true"
               aria-expanded={settingsMenuOpen ? 'true' : undefined}
               onClick={() => setSettingsMenuOpen(true)}>
-              <SettingsIcon fontSize="small" sx={{ ml: 'auto' }} />
-            </ToolbarButton>
+                <SettingsIcon fontSize="small" sx={{ ml: 'auto' }} />
+          </ToolbarButton>
         </Tooltip>
 
         <Menu

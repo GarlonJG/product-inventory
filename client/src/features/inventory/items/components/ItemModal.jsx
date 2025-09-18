@@ -1,11 +1,14 @@
 import React from 'react'
 import { useRef, useState, useEffect } from 'react';
+import { useParams, useNavigate } from "react-router-dom";
 import { Modal } from '@mui/material';
 import ItemForm from './ItemForm';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
+import { useSelector } from 'react-redux';
+import { INITIAL_ITEM_FORM } from '../../constants/items';
 
 const modal_box = {
   position: 'absolute', 
@@ -19,19 +22,38 @@ const modal_box = {
   maxWidth: '90%'
 };
 
-const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting, error: propError }) => {
+const ItemModal = ({ handleClose: onClose, handleSubmit, error: propError }) => {
   console.log("ItemModal rendered");
   const [error, setError] = useState(null);
   const formRef = useRef();
+  
+  const { id } = useParams();
+  const isNew = !id;
+  
+  const navigate = useNavigate();
+  
+  // FROM URL: Use item from already-loaded list
+  const item = useSelector(state => {
+    const items = state.api.queries['getItems(undefined)']?.data || [];
+    console.log("items", items);
+    return items.find(i => i.id === Number(id));
+  });
 
-  // Reset error when modal is opened/closed
+  // Will use item found from URL if it exists, otherwise use form
+  const itemData = isNew ? INITIAL_ITEM_FORM : item;
+
+  const localHandleClose = () => {
+    navigate('/');
+    onClose?.();
+  };
+
   useEffect(() => {
-    if (open) {
+    if (itemData.id) {
       setError(propError);
     } else {
       setError(null);
     }
-  }, [open, propError]);
+  }, [itemData.id, propError]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -42,32 +64,35 @@ const ItemModal = ({ open, form, handleClose, handleSubmit, isSubmitting, error:
 
   return (
     <Modal
-      open={open}
-      onClose={handleClose}
+      open={true}
+      onClose={localHandleClose}
       aria-labelledby="item-modal-title"
       aria-describedby="item-modal-description">
       <Box sx={modal_box}>
-        <DialogTitle>{form.id ? 'Edit Item' : 'Add Item'}</DialogTitle>
+        <DialogTitle>{itemData.id ? 'Edit Item' : 'Add Item'}</DialogTitle>
         <ItemForm
-          form={form} 
+          form={itemData} 
           handleSubmit={handleSubmit} 
           ref={formRef}
           error={error}
-          isEditing={form.id}
+          isEditing={itemData.id}
           resetError={() => setError(null)} />
         <DialogActions sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <Button 
             variant="outlined" 
-            onClick={handleClose}
-            disabled={isSubmitting}>
+            onClick={localHandleClose}
+            //disabled={isSubmitting}
+            >
             Cancel
           </Button>
           <Button 
             type="submit" 
             variant="contained"
             onClick={handleSave}
-            disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Save'}
+            //disabled={isSubmitting}
+            >
+            {/* {isSubmitting ? 'Saving...' : 'Save'} */}
+            Save
           </Button>
         </DialogActions>
       </Box>

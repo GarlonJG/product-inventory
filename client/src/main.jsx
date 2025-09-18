@@ -3,9 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { store } from './app/store';
-import App from './containers/App/App.jsx';
 import './styles/index.css';
+import './styles/App.css';
 import { ToastProvider } from './app/providers/ToastProvider';
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/routes";
 
 // Global styles to ensure full viewport coverage
 const globalStyles = {
@@ -43,7 +45,7 @@ createRoot(document.getElementById('root')).render(
       <CssBaseline />
       <GlobalStyles styles={globalStyles} />
       <ToastProvider>
-        <App />
+        <RouterProvider router={router} />
       </ToastProvider>
     </Provider>
   </StrictMode>

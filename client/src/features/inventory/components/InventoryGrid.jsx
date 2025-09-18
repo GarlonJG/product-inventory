@@ -13,6 +13,7 @@ import InventoryList from './InventoryList';
 
 import ToolbarMenu from './ToolbarMenu';
 import { exportCsvFromItems } from '../../../shared/utils/exportCsv';
+import { useNavigate } from 'react-router-dom';
 
 const boxStyle = {
   display: 'flex',
@@ -25,10 +26,12 @@ const dataGridStyle = {
   height: '500px'
 };
 
-const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, deleteItem }) => {
+const InventoryGrid = ({ items, deleteItem }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [settings, setSettings] = useState(getInitialSettings());
+
+    const navigate = useNavigate();
 
     useEffect(() => {
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
@@ -74,7 +77,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                 startIcon={<EditIcon />}
                 aria-label="Edit"
                 sx={{ minWidth: '30px' }}
-                onClick={() => changeItem(params.row)}/>
+                onClick={() => navigate(`/${params.row.id}/edit`)}/>
               <Button
                 size="small"
                 color="error"
@@ -104,8 +107,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
     };
 
     const onAdd = () => {
-      handleOpen();
-      resetInitialState();
+      navigate('/new');
     };
 
     const onResetSettings = () => {
@@ -131,7 +133,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
             onPrint={onPrint}
             onResetSettings={onResetSettings}
           />
-          <InventoryList items={items} onEdit={changeItem} onDelete={deleteItem}/>
+          <InventoryList items={items} onDelete={deleteItem}/>
           </>
         ) : (
           <>
@@ -146,9 +148,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                   disableSelectionOnClick
                   slots={{ toolbar: EditToolBar }}
                   slotProps={{
-                    toolbar: { 
-                      handleOpen, 
-                      resetInitialState,
+                    toolbar: {
                       settings,
                       onSettingsChange: setSettings,
                       onViewChange: toggleView
@@ -167,7 +167,7 @@ const InventoryGrid = ({ items, handleOpen, resetInitialState, changeItem, delet
                 onPrint={onPrint}
                 onResetSettings={onResetSettings}
               />
-              <InventoryList items={items} onEdit={changeItem} onDelete={deleteItem}/>
+              <InventoryList items={items} onDelete={deleteItem}/>
               </>
             )}
           </>
