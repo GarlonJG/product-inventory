@@ -3,17 +3,17 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import EditToolBar, { getInitialSettings, SETTINGS_STORAGE_KEY } from './EditToolBar';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import InventoryList from './InventoryList';
 
-import ToolbarMenu from './ToolbarMenu';
-import { exportCsvFromItems } from '../../../shared/utils/exportCsv';
-import { useInventoryActions } from '../hooks/useInventoryActions';
+import InventoryList from './InventoryList';
+import EditToolBar from '../toolbar/EditToolBar';
+import ToolbarMenu from '../toolbar/ToolbarMenu';
+import { exportCsvFromItems } from '../../../../shared/utils/exportCsv';
+import { useInventoryActions } from '../../hooks/useInventoryActions';
+import { getInitialSettings, SETTINGS_STORAGE_KEY } from '../../constants/toolBar';
 
 const boxStyle = {
   display: 'flex',

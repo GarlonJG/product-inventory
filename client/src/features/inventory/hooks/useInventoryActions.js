@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteItemMutation, useAddItemMutation, useUpdateItemMutation } from '../items/api';
+import { useDeleteItemMutation, useAddItemMutation, useUpdateItemMutation } from '../api';
 import { useToast } from '../../../app/providers/ToastProvider';
 
 export function useInventoryActions(originalItem) {

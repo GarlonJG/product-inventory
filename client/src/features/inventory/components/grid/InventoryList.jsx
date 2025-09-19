@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Button, Divider, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useInventoryActions } from '../hooks/useInventoryActions';
+import { useInventoryActions } from '../../hooks/useInventoryActions';
 
 const InventoryList = ({ items }) => {
   const theme = useTheme();

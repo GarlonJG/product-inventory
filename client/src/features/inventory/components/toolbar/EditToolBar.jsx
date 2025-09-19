@@ -25,6 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { DENSITY_OPTIONS, SETTINGS_DEFAULT } from '../../constants/toolBar';
 
 const toolbar_btn_style = {
   color: '#474747',
@@ -74,30 +75,6 @@ const menu_item_style = {
   }
 }
 
-const DENISTY_OPTIONS = [
-  { label: 'Compact density', value: 'compact' },
-  { label: 'Standard density', value: 'standard' },
-  { label: 'Comfortable density', value: 'comfortable' },
-];
-
-export const SETTINGS_STORAGE_KEY = 'inventory-grid-settings';
-
-const SETTINGS_DEFAULT = {
-  density: 'standard',
-  showCellBorders: false,
-  showColumnBorders: false,
-  view: 'grid',
-};
-
-export const getInitialSettings = () => {
-  try {
-    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    return storedSettings ? JSON.parse(storedSettings) : SETTINGS_DEFAULT;
-  } catch (error) {
-    return SETTINGS_DEFAULT;
-  }
-};
-
 const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
@@ -141,7 +118,7 @@ const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
                 'aria-labelledby': 'settings-menu-trigger',
               },
             }}>
-          {DENISTY_OPTIONS.map((option) => (
+          {DENSITY_OPTIONS.map((option) => (
             <MenuItem
               key={option.value}
               onClick={() =>

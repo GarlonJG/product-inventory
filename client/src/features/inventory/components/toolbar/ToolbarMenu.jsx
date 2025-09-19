@@ -1,8 +1,7 @@
-// ToolbarMenu.jsx
 import React, { useState, useRef } from 'react';
 import {
   Button, Tooltip, Menu, MenuItem, ListItemIcon, ListItemText,
-  Divider, IconButton, Typography, Box
+  Divider, IconButton, Box
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -13,11 +12,7 @@ import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewListIcon from '@mui/icons-material/ViewList';
 
-const DENSITY_OPTIONS = [
-  { label: 'Compact density', value: 'compact' },
-  { label: 'Standard density', value: 'standard' },
-  { label: 'Comfortable density', value: 'comfortable' },
-];
+import { DENSITY_OPTIONS } from '../../constants/toolBar';
 
 /**
  * A pure toolbar menu that doesn't depend on DataGrid context
