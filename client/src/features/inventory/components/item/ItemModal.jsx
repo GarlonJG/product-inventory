@@ -34,13 +34,13 @@ const ItemModal = ({ error: propError }) => {
   const navigate = useNavigate();
   
   //COMING FROM URL: Use item from already-loaded list
-  const item = useSelector(state => {
-    const itemsMap = new Map(
-      state.api.queries['getItems(undefined)']?.data?.map(item => [item.id, item])
-    );
-    const _item = itemsMap.get(Number(id));
-    return _item;
-  });
+  const itemsArray = useSelector(state => state.api.queries['getItems(undefined)']?.data || []);
+  console.log("itemsArray", itemsArray);
+  const itemsMap = React.useMemo(() => {
+    return new Map(itemsArray.map(item => [item.id, item]));
+  }, [itemsArray]);
+
+  const item = itemsMap.get(Number(id));
 
   const { handleSave } = useInventoryActions(item);
 
