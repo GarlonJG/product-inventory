@@ -13,7 +13,7 @@ import InventoryList from './InventoryList';
 
 import ToolbarMenu from './ToolbarMenu';
 import { exportCsvFromItems } from '../../../shared/utils/exportCsv';
-import { useNavigate } from 'react-router-dom';
+import { useInventoryActions } from '../hooks/useInventoryActions';
 
 const boxStyle = {
   display: 'flex',
@@ -26,12 +26,12 @@ const dataGridStyle = {
   height: '500px'
 };
 
-const InventoryGrid = ({ items, deleteItem }) => {
+const InventoryGrid = ({ items }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [settings, setSettings] = useState(getInitialSettings());
 
-    const navigate = useNavigate();
+    const { handleAdd, handleEdit, handleDelete } = useInventoryActions();
 
     useEffect(() => {
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
@@ -77,14 +77,14 @@ const InventoryGrid = ({ items, deleteItem }) => {
                 startIcon={<EditIcon />}
                 aria-label="Edit"
                 sx={{ minWidth: '30px' }}
-                onClick={() => navigate(`/${params.row.id}/edit`)}/>
+                onClick={() => handleEdit(params.row.id)}/>
               <Button
                 size="small"
                 color="error"
                 startIcon={<DeleteOutlinedIcon />}
                 aria-label="Delete"
                 sx={{ minWidth: '30px' }}
-                onClick={(e) => deleteItem(e, params.row.id)}/>
+                onClick={(e) => handleDelete(e, params.row.id)}/>
             </div>
           ),
         },
@@ -106,10 +106,6 @@ const InventoryGrid = ({ items, deleteItem }) => {
       window.print();
     };
 
-    const onAdd = () => {
-      navigate('/new');
-    };
-
     const onResetSettings = () => {
       setSettings(getInitialSettings());
       localStorage.removeItem(SETTINGS_STORAGE_KEY);
@@ -128,12 +124,12 @@ const InventoryGrid = ({ items, deleteItem }) => {
             settings={settings}
             onSettingsChange={setSettings}
             onViewChange={toggleView}
-            onAdd={onAdd}
+            onAdd={handleAdd}
             onExportCsv={onExportCsv}
             onPrint={onPrint}
             onResetSettings={onResetSettings}
           />
-          <InventoryList items={items} onDelete={deleteItem}/>
+          <InventoryList items={items}/>
           </>
         ) : (
           <>
@@ -150,6 +146,7 @@ const InventoryGrid = ({ items, deleteItem }) => {
                   slotProps={{
                     toolbar: {
                       settings,
+                      handleAdd,
                       onSettingsChange: setSettings,
                       onViewChange: toggleView
                     }
@@ -162,12 +159,12 @@ const InventoryGrid = ({ items, deleteItem }) => {
                 settings={settings}
                 onSettingsChange={setSettings}
                 onViewChange={toggleView}
-                onAdd={onAdd}
+                onAdd={handleAdd}
                 onExportCsv={onExportCsv}
                 onPrint={onPrint}
                 onResetSettings={onResetSettings}
               />
-              <InventoryList items={items} onDelete={deleteItem}/>
+              <InventoryList items={items}/>
               </>
             )}
           </>

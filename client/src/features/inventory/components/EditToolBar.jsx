@@ -25,7 +25,6 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
 
 const toolbar_btn_style = {
   color: '#474747',
@@ -99,7 +98,7 @@ export const getInitialSettings = () => {
   }
 };
 
-const EditToolBar = ({settings, onSettingsChange, onViewChange}) => {
+const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const settingsMenuTriggerRef = useRef(null);
@@ -107,8 +106,6 @@ const EditToolBar = ({settings, onSettingsChange, onViewChange}) => {
   const apiRef = useGridApiContext();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  const navigate = useNavigate();
   
     return (
       <Toolbar sx={toolbar_style}>
@@ -117,7 +114,7 @@ const EditToolBar = ({settings, onSettingsChange, onViewChange}) => {
                   sx={toolbar_btn_style}
                   size="small"
                   startIcon={<AddIcon sx={icon_style} />}
-                  onClick={() => navigate('/new')}>
+                  onClick={handleAdd}>
                     Add Item
                   </Button>}/>
         <Tooltip title="Settings">

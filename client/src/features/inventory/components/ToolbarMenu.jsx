@@ -49,8 +49,7 @@ const ToolbarMenu = ({
         size="small"
         startIcon={<AddIcon />}
         onClick={onAdd}
-        aria-label="Add item"
-      >
+        aria-label="Add item">
         Add Item
       </Button>
 
