@@ -60,13 +60,6 @@ const ItemModal = () => {
           onSubmit={handleSave}
           schema={isEditing ? itemSchema : createItemSchema}
           id="item-form">
-          {/* <ItemForm
-            form={itemData} 
-            handleSubmit={handleSave} 
-            ref={formRef}
-            error={error}
-            isEditing={itemData.id}
-            resetError={() => setError(null)} /> */}
             <ItemForm handleClose={handleClose}/>
         </Form>
       </Box>
