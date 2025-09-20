@@ -3,7 +3,7 @@ import ItemModal from "./components/item/ItemModal"
 
 export const inventoryRoutes = [
   {
-    path: "/", //using this as a catch all for now
+    path: "/inventory",
     element: <InventoryPage />,
     children: [
       { index: true, element: null }, //Change element if more parts of inventory are added or it goes to an InventoryLayout

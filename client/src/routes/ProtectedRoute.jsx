@@ -1,10 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 function ProtectedRoute({ redirectTo = "/login" }) {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  if (!isLoggedIn) return <Navigate to={redirectTo} />;
+  // Check for auth token in localStorage
+  const token = localStorage.getItem('access_token');
+  
+  if (!token) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   return <Outlet />;
 }

@@ -1,13 +1,17 @@
 import { Global, Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ItemModule} from './modules/items/item.module'
+import { ItemModule } from './modules/items/item.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { SecurityMiddleware } from './middleware/security.middleware';
 import { SanitizationMiddleware } from './middleware/sanitization.middleware';
 
 @Global()
 @Module({
-  imports: [ItemModule],
+  imports: [
+    ItemModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

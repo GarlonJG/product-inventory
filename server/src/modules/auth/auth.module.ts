@@ -12,6 +12,7 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [
     PrismaModule,
     PassportModule,
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -21,7 +22,18 @@ import { LocalStrategy } from './strategies/local.strategy';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService, 
+    LocalStrategy, 
+    JwtStrategy,
+    {
+      provide: 'JWT_STRATEGY_CONFIG',
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+      }),
+      inject: [ConfigService],
+    },
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })
