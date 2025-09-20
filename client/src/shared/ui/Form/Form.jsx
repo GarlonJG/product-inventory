@@ -1,55 +1,27 @@
-import React from 'react';
-import { memo, forwardRef, useImperativeHandle } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { memo } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const Form = memo(forwardRef(({ 
+const Form = memo(({ 
   defaultValues, 
-  externalOnSubmit, 
   children,
-  mode = 'onChange',
-  transformValues,
+  onSubmit,
   schema,
   id = 'default-form-id',
-}, ref) => {
-  const { 
-    control, 
-    handleSubmit: formHandleSubmit, 
-    formState: { errors },
-    setError: setFormError,
-    ...formMethods
-  } = useForm({
+}) => {
+
+  const methods = useForm({
     defaultValues,
-    mode,
     resolver: schema ? zodResolver(schema) : undefined,
   });
 
-  const onSubmitHandler = (data) => {
-    const transformedData = transformValues ? transformValues(data) : data;
-    externalOnSubmit(transformedData);
-  };
-
-  // Expose form methods to parent via ref
-  useImperativeHandle(ref, () => ({
-    ...formMethods,
-    submit: () => {
-      formHandleSubmit(onSubmitHandler)();
-    },
-    setError: (field, error) => {
-      setFormError(field, error);
-    },
-    setErrors: (errors) => {
-      Object.entries(errors).forEach(([field, error]) => {
-        setFormError(field, error);
-      });
-    }
-  }));
-
   return (
-    <form id={id} aria-label={id} onSubmit={formHandleSubmit(onSubmitHandler)} noValidate>
-      {children({ control, errors })}
-    </form>
+    <FormProvider {...methods}>
+      <form id={id} aria-label={id} onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+        {children}
+      </form>
+    </FormProvider>
   );
-}));
+});
 
 export default Form;

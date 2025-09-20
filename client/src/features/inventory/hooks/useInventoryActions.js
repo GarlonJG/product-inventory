@@ -44,7 +44,7 @@ export function useInventoryActions(originalItem) {
       }
     } catch (error) {
       console.error('Error saving item:', error);
-      notify({ message: 'Error saving item', severity: 'error' });
+      notify({ message: error?.data?.message || 'Error saving item', severity: 'error' });
     }
   }, [addItem, updateItem, notify, originalItem]);
 

@@ -1,17 +1,15 @@
 import React from 'react';
 import { memo } from 'react';
 import { TextField } from '@mui/material';
-import { Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 const FormInput = memo(({ 
   name, 
-  control, 
-  rules = {}, 
-  error,
   helperText,
   onlyNumbers,
   ...props 
 }) => {
+  const { register, formState: { errors } } = useFormContext();
   const label = name.charAt(0).toUpperCase() + name.slice(1);
 
   const inputMode = props?.slotProps?.htmlInput?.inputMode;
@@ -31,22 +29,15 @@ const FormInput = memo(({
   } : {};
   
   return (
-    <Controller
-      name={name}
-      control={control}
-      rules={rules}
-      render={({ field }) => (
-        <TextField
-          {...field}
-          label={label}
-          fullWidth
-          margin="normal"
-          error={!!error}
-          helperText={error?.message || helperText}
-          {...props}
-          {...numberHandlers}
-        />
-      )}
+    <TextField        
+      label={label}
+      fullWidth
+      margin="normal"
+      error={!!errors[name]}
+      helperText={errors[name]?.message || helperText}
+      {...props}
+      {...register(name)}
+      {...numberHandlers}
     />
   );
 });
