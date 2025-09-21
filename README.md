@@ -2,22 +2,26 @@
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
-<WIP as of 9/16/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
+<WIP as of 9/20/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
 
 ## Still to Come
 - Additional layout + Grid styling
 - Additional options/settings for the inventory grid
-- User authentication and authorization
 - Role-based access control
 - Data import functionality
 
 ## Features
 
+- **User Authentication**: Secure login/logout with JWT token management
 - **Product Management**: Add, view, edit, and delete products with full CRUD operations
 - **Form Validation**: Comprehensive client and server-side validation using Zod
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
 - **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination
 - **Database Management**: SQLite database with Prisma ORM for easy data management
+- **Protected Routes**: Secure client-side routing with authentication checks
+- **Testing**: Integrated Unit and Component testins with Jest and React Testing Library and Cypress
+- **API Documentation**: Integrated API documentation with Swagger
+- **Security**: Implemented security measures including rate limiting, input sanitization, and authentication
 
 ## Tech Stack
 
@@ -28,6 +32,8 @@ A full-stack web application for managing product inventory with a modern React 
 - React Hook Form with Zod validation
 - Emotion (for styling)
 - Redux Toolkit RTK Query (data fetching and caching)
+- React Router v6 (client-side routing)
+- JWT Authentication
 
 ### Backend
 - Node.js
@@ -35,14 +41,22 @@ A full-stack web application for managing product inventory with a modern React 
 - SQLite (Database)
 - NestJS (Framework)
 - Zod for runtime validation
+- JWT Authentication
 - Middleware implemented for sanitization (DOMPurify) and security (helmet, rate-limit)
 
-## Data Validation
+## Key Components
 
-The application implements a robust validation system:
+### Authentication
+- JWT-based authentication system
+- Protected routes with role-based access control
+- Persistent login sessions
+- Secure token storage
 
-- **Client-side Validation**: Immediate feedback in forms using React Hook Form and Zod
-- **Server-side Validation**: Additional validation on the server using the same Zod schemas
+### User Interface
+- Responsive layout with Material-UI
+- Interactive user menu with profile and logout options
+- Modern form handling with validation
+- Intuitive data grid for product management
 
 ## Getting Started
 
@@ -86,37 +100,9 @@ The application implements a robust validation system:
    ```
 
 4. Set up environment variables:
-   - Create `.env` files in both `client` and `server` directories as needed
+   - Create `.env` files in both `client` and `server` directories
    - Refer to `.env.example` files for required variables
-   - For the server, ensure you have a valid `DATABASE_URL` in your `.env` file
-
-### Database Management
-
-#### Recreating the Database
-If you need to start with a fresh database:
-
-   ```bash
-# From the server directory
-rm prisma/inventory.db
-npx prisma migrate dev --name init
-```
-
-#### Running Migrations
-When you make changes to your Prisma schema:
-
-```bash
-# Generate and apply migrations
-npx prisma migrate dev --name your_migration_name
-
-# Apply migrations in production
-npx prisma migrate deploy
-```
-
-#### Viewing the Database
-Use Prisma Studio to explore and edit your database:
-```bash
-npx prisma studio
-```
+   - For the server, ensure you have a valid `DATABASE_URL` and `JWT_SECRET` in your `.env` file
 
 ### Running the Application
 
@@ -145,8 +131,9 @@ product-inventory/
 │   ├── public/            # Static files
 │   └── src/               # Source files
 │       ├── assets/        # Assets
-│       ├── components/    # Reusable UI components
-│       ├── containers/    # Page components
+│       ├── features/      # Feature modules
+│       ├── layouts/       # Layout components
+│       ├── routes/        # Application routes
 │       ├── styles/        # Styles
 │       ├── App.jsx        # Main App component
 │       └── main.jsx       # Entry point
@@ -154,7 +141,11 @@ product-inventory/
 │   ├── prisma/           # Prisma schema and migrations
 │   │   └── migrations/   # Database migrations
 │   ├── src/              # Server source code
+│   │   ├── modules/      # Feature modules
+│   │   └── main.ts       # Application entry point
 │   └── package.json      # Server dependencies
+├── shared/                # Shared code between frontend and backend
+│   └── validations/      # Shared validation schemas
 ├── .gitignore
 └── package.json          # Root project configuration
 ```
