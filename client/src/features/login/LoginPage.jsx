@@ -1,36 +1,31 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../auth/api/authApi';
 import { 
   Container, 
   Box, 
   Avatar, 
-  Typography, 
-  TextField, 
-  Button, 
-  Alert, 
-  CircularProgress
+  Typography
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Form from '../../shared/ui/Form/Form';
+import LoginForm from './components/LoginForm';
+import { useToast } from '../../app/providers/ToastProvider';
+import { loginFormSchema } from './schema/loginForm.schema';
+
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const { notify } = useToast();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
+  const handleSubmit = async (formData) => {
     try {
-        await login({ email, password }).unwrap();
+        await login(formData).unwrap();
         // Redirect to the previous location or home
         navigate("/", { replace: true });
-      } catch (err) {
-        setError(err?.data?.message || 'Login failed. Please check your credentials.');
-      }
+    } catch (err) {
+        notify({ message: err?.data?.message || 'Login failed. Please check your credentials.', severity: 'error' });
+    }
   };
 
   return (
@@ -41,6 +36,10 @@ const LoginPage = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          backgroundColor: 'white',
+          borderRadius: '5px',
+          padding: '20px',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
@@ -49,46 +48,12 @@ const LoginPage = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            disabled={isLoading}
-            sx={{ mt: 3, mb: 2 }}
-          >
-            {isLoading ? <CircularProgress size={24} /> : 'Sign In'}
-          </Button>
-        </Box>
+        <Form
+          onSubmit={handleSubmit}
+          schema={loginFormSchema}
+          id="login-form">
+          <LoginForm/>
+        </Form>
       </Box>
     </Container>
   );

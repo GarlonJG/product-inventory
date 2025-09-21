@@ -8,6 +8,7 @@ import InventoryGrid from './components/grid/InventoryGrid';
 function InventoryPage() {
   const { data: items = [], isLoading, isError } = useGetItemsQuery();
 
+  //TODO: Add better UX for loading and error states
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading items</div>;
 
