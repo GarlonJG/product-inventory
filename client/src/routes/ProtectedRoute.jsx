@@ -1,6 +1,6 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-function ProtectedRoute({ redirectTo = "/login" }) {
+function ProtectedRoute({ children, redirectTo = "/login" }) {
   // Check for auth token in localStorage
   const token = localStorage.getItem('access_token');
   
@@ -8,7 +8,7 @@ function ProtectedRoute({ redirectTo = "/login" }) {
     return <Navigate to={redirectTo} replace />;
   }
 
-  return <Outlet />;
+  return children;
 }
 
 export default ProtectedRoute;

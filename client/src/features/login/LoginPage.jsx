@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../auth/api/authApi';
 import { 
   Container, 
@@ -19,7 +19,6 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +27,7 @@ const LoginPage = () => {
     try {
         await login({ email, password }).unwrap();
         // Redirect to the previous location or home
-        navigate(location.from, { replace: true });
+        navigate("/", { replace: true });
       } catch (err) {
         setError(err?.data?.message || 'Login failed. Please check your credentials.');
       }

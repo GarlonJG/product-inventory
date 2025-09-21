@@ -7,7 +7,7 @@ import './styles/index.css';
 import './styles/App.css';
 import { ToastProvider } from './app/providers/ToastProvider';
 import { RouterProvider } from "react-router-dom";
-import router from "./routes/routes";
+import router from './routes/routes'
 
 // Global styles to ensure full viewport coverage
 const globalStyles = {
