@@ -56,26 +56,8 @@ export const AuthProvider = ({ children }) => {
     });
   }, [refresh]);
 
-  // Handle 401 Unauthorized responses
-  /* useEffect(() => {
-    const originalBaseQuery = baseApi.util.getRunningOperationPromises;
-    
-    baseApi.util.getRunningOperationPromises = async function(...args) {
-      try {
-        const result = await originalBaseQuery.apply(this, args);
-        return result;
-      } catch (error) {
-        if (error.status === 401) {
-          logout();
-        }
-        throw error;
-      }
-    };
-
-    return () => {
-      baseApi.util.getRunningOperationPromises = originalBaseQuery;
-    };
-  }, [logout]); */
+  //TOTHINK: Don't forget to handle 401 errors in the baseApi.
+  //(e.g.baseApi.util.getRunningOperationPromises, error.status === 401, logout();)
 
   const value = {
     accessToken,

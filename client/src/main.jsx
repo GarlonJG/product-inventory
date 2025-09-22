@@ -1,12 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
+import { RouterProvider } from "react-router-dom";
+
 import { CssBaseline, GlobalStyles } from '@mui/material';
-import { store } from './app/store';
 import './styles/index.css';
 import './styles/App.css';
+
+import { store } from './app/store';
 import { ToastProvider } from './app/providers/ToastProvider';
-import { RouterProvider } from "react-router-dom";
 import router from './routes/routes'
 import { AuthProvider } from './features/auth/hooks/authcontext.provider'
 
