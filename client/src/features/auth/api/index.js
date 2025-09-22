@@ -1,7 +1,6 @@
 export {
     authApi,
     useLoginMutation,
-    useGetProfileQuery,
-    useLogoutMutation,
+    useLogoutMutation
 } from './authApi';
   

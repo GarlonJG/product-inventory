@@ -19,16 +19,6 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'Return current user' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  getProfile(@Req() req) {
-    return req.user;
-  }
-
-  @UseGuards(AuthGuard('jwt'))
   @Post('validate-token')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Validate JWT token' })

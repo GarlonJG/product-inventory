@@ -8,6 +8,7 @@ import './styles/App.css';
 import { ToastProvider } from './app/providers/ToastProvider';
 import { RouterProvider } from "react-router-dom";
 import router from './routes/routes'
+import { AuthProvider } from './features/auth/hooks/authcontext.provider'
 
 // Global styles to ensure full viewport coverage
 const globalStyles = {
@@ -42,11 +43,13 @@ const globalStyles = {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <CssBaseline />
-      <GlobalStyles styles={globalStyles} />
-      <ToastProvider>
-        <RouterProvider router={router} />
-      </ToastProvider>
+      <AuthProvider>
+        <CssBaseline />
+        <GlobalStyles styles={globalStyles} />
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </AuthProvider>
     </Provider>
   </StrictMode>
 );

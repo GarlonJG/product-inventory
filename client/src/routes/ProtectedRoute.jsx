@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../features/auth/hooks/authcontext.provider";
 
 function ProtectedRoute({ children, redirectTo = "/login" }) {
-  // Check for auth token in localStorage
-  const token = localStorage.getItem('access_token');
+  const { accessToken } = useAuth();
   
-  if (!token) {
+  if (!accessToken) {
     return <Navigate to={redirectTo} replace />;
   }
 

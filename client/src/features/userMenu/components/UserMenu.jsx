@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FiLogOut, FiChevronDown } from 'react-icons/fi';
-import { useLogoutMutation } from '../../auth/api'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { useAuth } from '../../auth/hooks/authcontext.provider';
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  const [logout] = useLogoutMutation();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -25,15 +23,6 @@ const UserMenu = () => {
     };
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      navigate('/login');
-    } catch (err) {
-      console.error('Failed to logout:', err);
-    }
-  };
-
   return (
     <Box component="nav" sx={{ position: 'relative', display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }} ref={menuRef}>
       <button sx={{
@@ -45,7 +34,7 @@ const UserMenu = () => {
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <FiChevronDown sx={{ 
+        <FiChevronDown style={{ 
           transition: 'transform 0.2s ease-in-out',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0)'
         }} />
@@ -64,8 +53,8 @@ const UserMenu = () => {
             py: 1,
             borderBottom: '1px solid #ccc'
           }}>
-            <p className="font-medium">User Name</p>
-            <p className="text-xs text-gray-500">user@example.com</p>
+            <p className="font-medium">{user?.firstName} {user?.lastName}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
           </Box>
           <Button sx={{
               px: 2,
@@ -75,7 +64,7 @@ const UserMenu = () => {
                 bgcolor: 'gray.100'
               }
             }}
-            onClick={handleLogout}>
+            onClick={logout}>
             <FiLogOut className="mr-2" />
             Log Out
           </Button>
