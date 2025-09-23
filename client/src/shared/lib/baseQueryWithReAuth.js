@@ -22,10 +22,10 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
           const refreshResult = await baseQuery('/auth/refresh', api, extraOptions);
           if (refreshResult.data) {
             api.dispatch(setCredentials({ 
-              accessToken: refreshResult.data.accessToken, 
+              accessToken: refreshResult.data.access_token, 
               user: refreshResult.data.user 
             }));
-            processQueue(null, refreshResult.data.accessToken);
+            processQueue(null, refreshResult.data.access_token);
             result = await baseQuery(args, api, extraOptions);
           } else {
             api.dispatch(clearCredentials());

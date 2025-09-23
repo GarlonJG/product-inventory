@@ -21,6 +21,14 @@ import { LocalStrategy } from './strategies/local.strategy';
       }),
       inject: [ConfigService],
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_REFRESH_SECRET'),
+        signOptions: { expiresIn: '7d' },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   providers: [
     AuthService, 
@@ -30,9 +38,19 @@ import { LocalStrategy } from './strategies/local.strategy';
       provide: 'JWT_STRATEGY_CONFIG',
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
+        expiresIn: '1h',
       }),
       inject: [ConfigService],
     },
+    {
+      provide: 'JWT_REFRESH_CONFIG',
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_REFRESH_SECRET'),
+        expiresIn: '7d',  // Should match the signOptions.expiresIn above
+      }),
+      inject: [ConfigService],
+    },
+
   ],
   controllers: [AuthController],
   exports: [AuthService],

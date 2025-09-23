@@ -1,4 +1,5 @@
 import { baseApi } from '../../../shared/lib/baseApi';
+import { setCredentials, clearCredentials } from '../authSlice';
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -6,14 +7,16 @@ export const authApi = baseApi.injectEndpoints({
       query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
-        body: credentials,
+        body: credentials
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
-          // Removed dispatch(setAuth({ access_token: data.access_token, user: data.user }));
+          dispatch(setCredentials({ 
+            accessToken: data.access_token, 
+            user: data.user 
+          }));
         } catch (error) {
-          // Handle login error
           console.error('Login failed:', error);
           throw error;
         }
@@ -25,6 +28,7 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST'
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        console.log("Client in refresh onQueryStarted")
         try {
           const { data } = await queryFulfilled;
           dispatch(setCredentials({ accessToken: data.access_token, user: data.user }));

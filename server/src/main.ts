@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   // Load environment variables
@@ -12,6 +13,9 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log'],
   });
   
+  // Use cookie parser other wise won't be able to access cookies
+  app.use(cookieParser());
+
   // Global prefix for all routes
   app.setGlobalPrefix('api');
   

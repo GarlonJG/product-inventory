@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useLoginMutation, useLogoutMutation, useRefreshMutation } from '../api/authApi';
-import { baseApi } from '../../../shared/lib/baseApi';
 
 const AuthContext = createContext();
 
@@ -26,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   }, [loginMutation]);
 
   const refresh = useCallback(async () => {
+    console.log("Client in refresh callback");
     try {
         const result = await refreshMutation().unwrap();
         console.log("refresh result", result);
@@ -51,10 +51,11 @@ export const AuthProvider = ({ children }) => {
   }, [logoutMutation]);
 
   useEffect(() => {
+    if (isPublicRoute(window.location.pathname)) return;
     refresh().catch(() => {
       // Failed refresh, nothing to do or optionally logout
     });
-  }, [refresh]);
+  }, [accessToken, refresh]);
 
   //TOTHINK: Don't forget to handle 401 errors in the baseApi.
   //(e.g.baseApi.util.getRunningOperationPromises, error.status === 401, logout();)
@@ -75,6 +76,11 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+function isPublicRoute(pathname) {
+    const publicRoutes = ['/login', '/register', '/forgot-password'];
+    return publicRoutes.includes(pathname);
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
