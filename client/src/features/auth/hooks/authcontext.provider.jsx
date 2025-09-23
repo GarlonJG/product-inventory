@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation, useLogoutMutation, useRefreshMutation } from '../api/authApi';
+import { setCredentials, clearCredentials, selectCurrentToken, selectCurrentUser, selectIsAuthenticated } from '../authSlice';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [accessToken, setAccessToken] = useState(null); // no localStorage
-    const [user, setUser] = useState(null);
+    const dispatch = useDispatch();
+    const accessToken = useSelector(selectCurrentToken);
+    const user = useSelector(selectCurrentUser);
+    const isAuthenticated = useSelector(selectIsAuthenticated);
 
     const [loginMutation, { isLoading: isLoggingIn }] = useLoginMutation();
     const [logoutMutation] = useLogoutMutation();
@@ -15,8 +19,7 @@ export const AuthProvider = ({ children }) => {
     try {
     const result = await loginMutation(credentials).unwrap();
     console.log("login result", result);
-    setAccessToken(result.access_token);
-    setUser(result.user);
+    dispatch(setCredentials(result));
     return result;
     } catch (error) {
       console.error('Login failed:', error);
@@ -29,11 +32,11 @@ export const AuthProvider = ({ children }) => {
     try {
         const result = await refreshMutation().unwrap();
         console.log("refresh result", result);
-        setAccessToken(result.access_token);
-        setUser(result.user);
+        dispatch(setCredentials(result));
         return result;
     } catch (error) {
         console.error('Refresh failed:', error);
+        dispatch(clearCredentials());
         throw error;
     }
   }, [refreshMutation]);
@@ -44,18 +47,21 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      setAccessToken(null);
-      setUser(null);
+      dispatch(clearCredentials());
       window.location.href = '/login';
     }
   }, [logoutMutation]);
 
   useEffect(() => {
+    console.log('Current path:', window.location.pathname);
+    console.log('Is public route?', isPublicRoute(window.location.pathname));
     if (isPublicRoute(window.location.pathname)) return;
-    refresh().catch(() => {
+    console.log("Client in useEffect");
+    refresh().catch((error) => {
+        console.error('Failed to refresh token:', error);
       // Failed refresh, nothing to do or optionally logout
     });
-  }, [accessToken, refresh]);
+  }, [refresh]);
 
   //TOTHINK: Don't forget to handle 401 errors in the baseApi.
   //(e.g.baseApi.util.getRunningOperationPromises, error.status === 401, logout();)
@@ -64,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     accessToken,
     user,
     isLoading: isLoggingIn,
-    isAuthenticated: !!accessToken,
+    isAuthenticated,
     login,
     logout,
     refresh

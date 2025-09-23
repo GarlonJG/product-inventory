@@ -1,6 +1,7 @@
 export {
     authApi,
     useLoginMutation,
-    useLogoutMutation
+    useLogoutMutation,
+    useRefreshMutation
 } from './authApi';
   

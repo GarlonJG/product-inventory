@@ -1,8 +1,7 @@
-// features/auth/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  accessToken: null, // in-memory only!
+  accessToken: null,
   user: null,
 };
 
@@ -23,3 +22,8 @@ const authSlice = createSlice({
 
 export const { setCredentials, clearCredentials } = authSlice.actions;
 export default authSlice.reducer;
+
+// Selectors
+export const selectCurrentToken = (state) => state.auth.accessToken;
+export const selectCurrentUser = (state) => state.auth.user;
+export const selectIsAuthenticated = (state) => !!state.auth.accessToken;

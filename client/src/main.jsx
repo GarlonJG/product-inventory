@@ -7,7 +7,8 @@ import { CssBaseline, GlobalStyles } from '@mui/material';
 import './styles/index.css';
 import './styles/App.css';
 
-import { store } from './app/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './app/store';
 import { ToastProvider } from './app/providers/ToastProvider';
 import router from './routes/routes'
 import { AuthProvider } from './features/auth/hooks/authcontext.provider'
@@ -45,13 +46,15 @@ const globalStyles = {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <AuthProvider>
-        <CssBaseline />
-        <GlobalStyles styles={globalStyles} />
-        <ToastProvider>
-          <RouterProvider router={router} />
-        </ToastProvider>
-      </AuthProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <AuthProvider>
+          <CssBaseline />
+          <GlobalStyles styles={globalStyles} />
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </AuthProvider>
+      </PersistGate>
     </Provider>
   </StrictMode>
 );
