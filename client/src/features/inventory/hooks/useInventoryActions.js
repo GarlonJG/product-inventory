@@ -11,11 +11,11 @@ export function useInventoryActions(originalItem) {
   const { notify } = useToast();
 
   const handleEdit = useCallback((itemId) => {
-    navigate(`/${itemId}/edit`);
+    navigate(`/inventory/${itemId}/edit`);
   }, [navigate]);
 
   const handleAdd = useCallback(() => {
-    navigate('/new');
+    navigate('/inventory/new');
   }, [navigate]);
 
   const handleSave = useCallback(async (formData) => {
