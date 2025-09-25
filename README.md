@@ -99,13 +99,13 @@ A full-stack web application for managing product inventory with a modern React 
    # Create and seed the database
    npx prisma migrate dev --name init
    npx prisma db seed
-   - This will create a user with the role of ADMIN and a user with the role of USER
-   - admin@myinventory.com / password123
-   - user@myinventory.com / password123
    
    # (Optional) Start Prisma Studio to view/edit the database
    # npx prisma studio
    ```
+    - This will create a user with the role of ADMIN and a user with the role of USER
+     - admin@myinventory.com / password123
+     - user@myinventory.com / password123
 
 4. Set up environment variables:
    - Create `.env` files in both `client` and `server` directories
