@@ -16,6 +16,26 @@ interface RequestWithCookies extends Request {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  setCookie(res: Response, token: string) {
+    console.log('Setting cookie', token)
+    res.cookie('refresh_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // one week
+      path: '/',
+    });
+  }
+
+  removeCookie(res: Response) {
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+  }
+
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
@@ -24,43 +44,24 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res) {
 
     const { access_token, refresh_token, user } = await this.authService.login(loginDto.email, loginDto.password);
-
+   
     // Set refresh token cookie
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax', // or 'strict'
-      maxAge: 1000 * 60 * 60 * 24 * 7, // one week
-      path: '/api/auth/refresh',
-    });
-
+    this.setCookie(res, refresh_token);
     return { access_token, user };
   }
 
   @Post('refresh')
   async refresh(@Req() req: RequestWithCookies, @Res({ passthrough: true }) res: Response) {
-    console.log("In refresh controller");
     if (!req.cookies['refresh_token']) {
-      console.log('No refresh token found in cookies');
       throw new UnauthorizedException('No refresh token provided');
     }
     
     try {
 
-      const refreshToken = req.cookies['refresh_token'];
-      console.log('Attempting to refresh with token:', refreshToken);
-      
+      const refreshToken = req.cookies['refresh_token'];      
       const { access_token, user, refresh_token: newRefreshToken } = await this.authService.refresh(refreshToken);
 
-      // Set new refresh token cookie for token rotation
-      res.cookie('refresh_token', newRefreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax', // or 'strict'
-        maxAge: 1000 * 60 * 60 * 24 * 7, // one week
-        path: '/',
-      });
-
+      this.setCookie(res, newRefreshToken);
       return { access_token, user };
 
     } catch (error) {
@@ -71,12 +72,7 @@ export class AuthController {
 
   @Post('logout')
   async logout(@Res({ passthrough: true }) res) {
-    res.clearCookie('refresh_token', { 
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    });
+    this.removeCookie(res);
     return { message: 'Logged out' };
   }
 

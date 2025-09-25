@@ -19,11 +19,7 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: '/auth/logout',
         method: 'POST'
-      }),
-      async onQueryStarted(arg, { dispatch }) {
-        // Clear all RTK Query cache
-        dispatch(baseApi.util.resetApiState());
-      },
+      })
     }),
   }),
   overrideExisting: false,

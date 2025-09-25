@@ -26,6 +26,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { DENSITY_OPTIONS, SETTINGS_DEFAULT } from '../../constants/toolBar';
+import { useAuth } from '../../../auth/hooks/authcontext.provider';
 
 const toolbar_btn_style = {
   color: '#474747',
@@ -79,6 +80,7 @@ const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const settingsMenuTriggerRef = useRef(null);
+  const { user } = useAuth();
 
   const apiRef = useGridApiContext();
   const theme = useTheme();
@@ -86,7 +88,7 @@ const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
   
     return (
       <Toolbar sx={toolbar_style}>
-        <ToolbarButton 
+        {user?.role === 'ADMIN' && (<ToolbarButton 
           render={<Button 
                   sx={toolbar_btn_style}
                   size="small"
@@ -94,6 +96,7 @@ const EditToolBar = ({settings, handleAdd, onSettingsChange, onViewChange}) => {
                   onClick={handleAdd}>
                     Add Item
                   </Button>}/>
+        )}
         <Tooltip title="Settings">
           <ToolbarButton
               ref={settingsMenuTriggerRef}

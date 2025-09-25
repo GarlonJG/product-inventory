@@ -44,7 +44,10 @@ const globalStyles = {
 };
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  
+  <>
+  {/* <StrictMode> */}
+  
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <AuthProvider>
@@ -56,5 +59,7 @@ createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </PersistGate>
     </Provider>
-  </StrictMode>
+    {/* </StrictMode> */}
+    </>
+  
 );

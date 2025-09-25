@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation, useLogoutMutation, useRefreshMutation } from '../api/authApi';
 import { setCredentials, clearCredentials, selectCurrentToken, selectCurrentUser, selectIsAuthenticated } from '../authSlice';
+import { baseApi } from '../../../shared/lib/baseApi';
 
 const AuthContext = createContext();
 
@@ -15,71 +16,75 @@ export const AuthProvider = ({ children }) => {
     const [logoutMutation] = useLogoutMutation();
     const [refreshMutation] = useRefreshMutation();
 
-  const login = useCallback(async (credentials) => {
-    try {
-    const result = await loginMutation(credentials).unwrap();
-    console.log("login result", result);
-    dispatch(setCredentials(result));
-    return result;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  }, [loginMutation]);
+    const login = useCallback(async (credentials) => {
+        try {
+            const result = await loginMutation(credentials).unwrap();
+            dispatch(setCredentials(result));
+            return result;
+        } catch (error) {
+            console.error('Login failed:', error);
+            throw error;
+        }
+    }, [loginMutation]);
 
-  const refresh = useCallback(async () => {
-    console.log("Client in refresh callback");
-    try {
-        const result = await refreshMutation().unwrap();
-        console.log("refresh result", result);
-        dispatch(setCredentials(result));
-        return result;
-    } catch (error) {
-        console.error('Refresh failed:', error);
-        dispatch(clearCredentials());
-        throw error;
-    }
-  }, [refreshMutation]);
+    const refresh = useCallback(async () => {
+        try {
+            const result = await refreshMutation().unwrap();
+            dispatch(setCredentials(result));
+            return result;
+        } catch (error) {
+            console.error('Refresh failed:', error);
+            dispatch(clearCredentials());
+            throw error;
+        }
+    }, [refreshMutation]);
 
-  const logout = useCallback(async () => {
-    try {
-      await logoutMutation().unwrap();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      dispatch(clearCredentials());
-      window.location.href = '/login';
-    }
-  }, [logoutMutation]);
+    const logout = useCallback(async () => {
+        try {
+            await logoutMutation().unwrap();
+            console.log("awaited logoutMutation");
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            console.log("finally about to clear credentials")
+            dispatch(clearCredentials());
 
-  useEffect(() => {
-    console.log('Current path:', window.location.pathname);
-    console.log('Is public route?', isPublicRoute(window.location.pathname));
-    if (isPublicRoute(window.location.pathname)) return;
-    console.log("Client in useEffect");
-    refresh().catch((error) => {
-        console.error('Failed to refresh token:', error);
-      // Failed refresh, nothing to do or optionally logout
-    });
-  }, [refresh]);
+            //TODO: Figure better place to reset api state.
+            //Currently it's here because it's the only place where the API can be reset
+            //without a global re-render on all API endpoints
+            dispatch(baseApi.util.resetApiState());
+            console.log("cleared Credentials");
+        }
+    }, [logoutMutation]);
 
-  //TOTHINK: Don't forget to handle 401 errors in the baseApi.
-  //(e.g.baseApi.util.getRunningOperationPromises, error.status === 401, logout();)
+    useEffect(() => {
+        console.log('Current path:', window.location.pathname);
+        console.log('Is public route?', isPublicRoute(window.location.pathname));
+        if (isPublicRoute(window.location.pathname)) return;
+        console.log("Client in useEffect");
+        refresh().catch((error) => {
+            console.error('Failed to refresh token:', error);
+        // Failed refresh, nothing to do or optionally logout
+        });
+    }, [refresh]);
 
-  const value = {
-    accessToken,
-    user,
-    isLoading: isLoggingIn,
-    isAuthenticated,
-    login,
-    logout,
-    refresh
-  };
+    //TOTHINK: Don't forget to handle 401 errors in the baseApi.
+    //(e.g.baseApi.util.getRunningOperationPromises, error.status === 401, logout();)
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    const value = {
+        accessToken,
+        user,
+        isLoading: isLoggingIn,
+        isAuthenticated,
+        login,
+        logout,
+        refresh
+    };
+
+    return (
+        <AuthContext.Provider value={value}>
+        {children}
+        </AuthContext.Provider>
   );
 };
 
@@ -89,9 +94,9 @@ function isPublicRoute(pathname) {
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };
