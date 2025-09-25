@@ -2,21 +2,24 @@
 
 A full-stack web application for managing product inventory with a modern React frontend and Node.js backend.
 
-<WIP as of 9/20/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
+<WIP as of 9/25/2025 - Currently in active development. See 'Still to Come' section below for upcoming features and improvements.>
 
 ## Still to Come
 - Additional layout + Grid styling
 - Additional options/settings for the inventory grid
-- Role-based access control
+- Server-side Role-based access control
 - Data import functionality
 
 ## Features
 
-- **User Authentication**: Secure login/logout with JWT token management
+- **JWT Authentication**: Secure login/logout with access and refresh tokens
+- **Role-Based Access Control (RBAC)**:
+  - Admin and User roles with granular permissions
+  - Protected routes based on user roles
 - **Product Management**: Add, view, edit, and delete products with full CRUD operations
 - **Form Validation**: Comprehensive client and server-side validation using Zod
 - **Responsive UI**: Built with Material-UI for a clean, modern interface
-- **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination
+- **Data Grid**: Interactive data table with exporting, printing, sorting, filtering, and pagination, with role-based access control
 - **Database Management**: SQLite database with Prisma ORM for easy data management
 - **Protected Routes**: Secure client-side routing with authentication checks
 - **Testing**: Integrated Unit and Component testins with Jest and React Testing Library and Cypress
@@ -33,6 +36,7 @@ A full-stack web application for managing product inventory with a modern React 
 - Emotion (for styling)
 - Redux Toolkit RTK Query (data fetching and caching)
 - React Router v6 (client-side routing)
+- Redux Persist (state persistence)
 - JWT Authentication
 
 ### Backend
@@ -49,7 +53,7 @@ A full-stack web application for managing product inventory with a modern React 
 ### Authentication
 - JWT-based authentication system
 - Protected routes with role-based access control
-- Persistent login sessions
+- Persistent login sessions with time-based refresh tokens
 - Secure token storage
 
 ### User Interface
@@ -94,6 +98,10 @@ A full-stack web application for managing product inventory with a modern React 
    
    # Create and seed the database
    npx prisma migrate dev --name init
+   npx prisma db seed
+   - This will create a user with the role of ADMIN and a user with the role of USER
+   - admin@myinventory.com / password123
+   - user@myinventory.com / password123
    
    # (Optional) Start Prisma Studio to view/edit the database
    # npx prisma studio
@@ -112,7 +120,7 @@ npm run start
 ```
 
 This will start:
-- Frontend development server at `http://localhost:3000`
+- Frontend development server at `http://localhost:5173`
 - Backend server at `http://localhost:5000`
 
 ## Available Scripts
