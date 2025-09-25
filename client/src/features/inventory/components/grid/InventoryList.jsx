@@ -3,10 +3,12 @@ import { Card, CardContent, Typography, Box, Button, Divider, useTheme } from '@
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { useInventoryActions } from '../../hooks/useInventoryActions';
+import { useAuth } from '../../../auth/hooks/authcontext.provider';
 
 const InventoryList = ({ items }) => {
   const theme = useTheme();
   const { handleEdit, handleDelete } = useInventoryActions();
+  const { user } = useAuth();
 
   return (
     <Box sx={{ width: '100%', p: 1, backgroundColor: 'white', borderStyle: 'solid', borderColor: '#d9d9d9', borderWidth: '0 1px 1px 1px', borderRadius: '0 0 5px 5px' }}>
@@ -53,6 +55,7 @@ const InventoryList = ({ items }) => {
                 </Typography>
               )}
               
+              {user?.role === 'ADMIN' && (
               <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
                 <Button
                   size="small"
@@ -68,6 +71,7 @@ const InventoryList = ({ items }) => {
                   aria-label="Delete item"
                 />
               </Box>
+              )}
             </CardContent>
           </Card>
           

@@ -11,6 +11,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import { useAuth } from '../../../auth/hooks/authcontext.provider';
 
 import { DENSITY_OPTIONS } from '../../constants/toolBar';
 
@@ -36,18 +37,20 @@ const ToolbarMenu = ({
 }) => {
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const settingsMenuTriggerRef = useRef(null);
+  const { user } = useAuth();
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'flex-end', borderStyle: 'solid', borderColor: '#d9d9d9', borderWidth: '1px 1px 0 1px', borderRadius: '5px 5px 0 0', gap: 1, p: 1, backgroundColor: 'white' }}>
-      <Button
-        sx={{ fontWeight: 'bold' }}
-        size="small"
-        startIcon={<AddIcon />}
-        onClick={onAdd}
-        aria-label="Add item">
-        Add Item
-      </Button>
-
+      {user?.role === 'ADMIN' && (
+        <Button
+          sx={{ fontWeight: 'bold' }}
+          size="small"
+          startIcon={<AddIcon />}
+          onClick={onAdd}
+          aria-label="Add item">
+          Add Item
+        </Button>
+      )}
       <Tooltip title="Settings">
         <IconButton
           ref={settingsMenuTriggerRef}

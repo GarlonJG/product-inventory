@@ -10,7 +10,7 @@ const router = createBrowserRouter([
   ...loginRoutes, 
   {
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["ADMIN", "USER"]}>
         <MainLayout />
       </ProtectedRoute>
     ),

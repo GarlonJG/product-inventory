@@ -14,6 +14,7 @@ import ToolbarMenu from '../toolbar/ToolbarMenu';
 import { exportCsvFromItems } from '../../../../shared/utils/exportCsv';
 import { useInventoryActions } from '../../hooks/useInventoryActions';
 import { getInitialSettings, SETTINGS_STORAGE_KEY } from '../../constants/toolBar';
+import { useAuth } from '../../../auth/hooks/authcontext.provider';
 
 const boxStyle = {
   display: 'flex',
@@ -30,6 +31,7 @@ const InventoryGrid = ({ items }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [settings, setSettings] = useState(getInitialSettings());
+    const { user } = useAuth();
 
     const { handleAdd, handleEdit, handleDelete } = useInventoryActions();
 
@@ -46,7 +48,8 @@ const InventoryGrid = ({ items }) => {
       }
     }, [isMobile]);
 
-    const columns = useMemo(() => [
+    const columns = useMemo(() => {
+      const baseColumns = [
         { field: 'name', headerName: 'Name', flex:1, minWidth: 200 },
         { field: 'stock', headerName: 'Stock', width: 100 },
         { field: 'sku', headerName: 'SKU', width: 100, maxLength: 6, align: 'center', truncateText: true },
@@ -61,8 +64,11 @@ const InventoryGrid = ({ items }) => {
             return `$${parseFloat(params).toFixed(2)}`;
           } 
         },
-        { field: 'description', headerName: 'Description', width: 200 },
-        {
+        { field: 'description', headerName: 'Description', width: 200 }
+      ];
+      
+      if (user?.role === 'ADMIN') {
+        baseColumns.push({
           field: 'actions',
           headerName: 'Actions',
           sortable: false,
@@ -86,9 +92,11 @@ const InventoryGrid = ({ items }) => {
                 sx={{ minWidth: '30px' }}
                 onClick={(e) => handleDelete(e, params.row.id)}/>
             </div>
-          ),
-        },
-      ], []);
+          )
+        })
+      }
+      return baseColumns;
+    }, [user?.role]);
 
     const toggleView = () => {
       setSettings(prev => ({
